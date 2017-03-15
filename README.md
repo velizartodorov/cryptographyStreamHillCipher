@@ -1,8 +1,7 @@
 # cryptographyStreamHillCipher
-cryptographyCourseWork
 
-Програмата криптира зададен текст чрез последователно прилагане на Потоков и Хил шифър. Резултатът се извежда на екрана.
+C++ source code encrypting plain text consequently in Stream and Hill Cipher. The cyphertext is displayed via console.
 
 # Source Code
 
-Реализиран е на Microsoft Visual C++ 2010 Express. Освен фундаменталния код, който да извършва алгоритмите при шифрирането са добавени допълнителни удобства за потребителя, като подсказка за това да въвежда единствено малки  букви от латинската азбука за plain text и ключ-а на потоковия шифър. Създадени са два главни метода за двата шифъра, като и двата са параметизирани – изходния параметър на първия шифър става входен за втория. Параметизирани са и всички методи, които биват извиквани повече от веднъж. Кода е оформен под формата на презентация, като последователно, че натискане на бутона Enter се визуализира всеки един модул от програмата.
+The source code is developed using Microsoft Visual C++ 2010 Express. Besides the algorithm, which encrypts the plain text, additional user features are also included — messages for typing the plain text using only lowercase latin letters and proper key input for the Stream cipher. Two main functions for every cipher are included, both parameterized - output parameter of the first cipher becomes input for the second. All methods, which are used several times, are also parameterized. The console output is develope in presentation form — using the Enter key every program module is visualised consequently.
