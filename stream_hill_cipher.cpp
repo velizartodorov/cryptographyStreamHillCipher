@@ -1,8 +1,8 @@
 #include<iostream>      /* cin, cout , system - pause, colour */
-#include<ctype.h>		/* toupper */
+#include<ctype.h>	/* toupper */
 #include<setjmp.h>      /* setjmp, longjmp */
 #include<string.h>      /* strlen, strcpy */
-#include<conio.h>		/* _getche(); */
+#include<conio.h>	/* _getche(); */
 
 using namespace std;
  
@@ -119,14 +119,14 @@ void streamCipher(char* plain_text, char* cipher_text, char* char_key)
 	for (i = 0; i < plain_length; i++)
 	{
 		cipher_text[i] = ((plain_text[i] - 97) + temp_key[j]) % 26;
-		j++;
+		j ++;
 		if (j == key_length)
 		{
 			j = 0;
-			for (int m = i - (key_length-1); m < i+1; m++)
+			for (int m = i - (key_length - 1); m < i + 1; m++)
 			{	
 				temp_key[j] = cipher_text[m];
-				j++;
+				j ++;
 			}
 			j = 0;
 		}
@@ -179,7 +179,7 @@ void hillCipher(char* plain_txt, int matrix_key[25][25])
 		{
 			plain_txt[str_length] = 'X';
 		}
-		plain_txt[str_length+1] = '\0';
+		plain_txt[str_length + 1] = '\0';
 		str_length++;
         cout << " Corrected plain text:" << endl ;
 		displayText(plain_txt,alphabet_num, str_length);
@@ -209,7 +209,7 @@ void hillCipher(char* plain_txt, int matrix_key[25][25])
    
 	//  Transforming values of alphabet_num into 2D
 
-	for (i = 0; i < row_count; i++)
+    for (i = 0; i < row_count; i++)
     {
         for (j = 0; j < 2; j++)
         {
@@ -280,10 +280,10 @@ void main()
 
     for (i = 0; i < 2; i++)
     {
-		for (j = 0; j < 2; j++)
+	for (j = 0; j < 2; j++)
         {
-			cout << endl << " Value [" << i + 1 << "," << j + 1 << "]: ";
-			cin >> matrix_key[i][j];
+		cout << endl << " Value [" << i + 1 << "," << j + 1 << "]: ";
+		cin >> matrix_key[i][j];
         }
     }
 
