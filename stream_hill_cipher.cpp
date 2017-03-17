@@ -1,8 +1,8 @@
-#include<iostream>      /* cin, cout , system - pause, colour */
-#include<ctype.h>	/* toupper */
-#include<setjmp.h>      /* setjmp, longjmp */
-#include<string.h>      /* strlen, strcpy */
-#include<conio.h>	/* _getche(); */
+#include<iostream>      // cin, cout, system - pause, colour 
+#include<ctype.h>	// toupper 
+#include<setjmp.h>      // setjmp, longjmp 
+#include<string.h>      // strlen, strcpy 
+#include<conio.h>	// _getche(); 
 
 using namespace std;
  
@@ -56,7 +56,7 @@ void displayText(char* display_text, int alphabet_num[50], int str_length)
         if (97 <= display_text[i] && display_text[i] <= 122)
         {
             alphabet_num[i] = display_text[i] - 97;
-            cout << " " << (char) toupper ( display_text[i] );
+            cout << " " << (char) toupper (display_text[i]);
 		}
 	   
         else if (65 <= display_text[i] && display_text[i] <= 90)
@@ -119,14 +119,14 @@ void streamCipher(char* plain_text, char* cipher_text, char* char_key)
 	for (i = 0; i < plain_length; i++)
 	{
 		cipher_text[i] = ((plain_text[i] - 97) + temp_key[j]) % 26;
-		j ++;
+		j++;
 		if (j == key_length)
 		{
 			j = 0;
 			for (int m = i - (key_length - 1); m < i + 1; m++)
 			{	
 				temp_key[j] = cipher_text[m];
-				j ++;
+				j++;
 			}
 			j = 0;
 		}
@@ -182,7 +182,7 @@ void hillCipher(char* plain_txt, int matrix_key[25][25])
 		plain_txt[str_length + 1] = '\0';
 		str_length++;
         cout << " Corrected plain text:" << endl ;
-		displayText(plain_txt,alphabet_num, str_length);
+		displayText(plain_txt, alphabet_num, str_length);
     }
     else
     {
