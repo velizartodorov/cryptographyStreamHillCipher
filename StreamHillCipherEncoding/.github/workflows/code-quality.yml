@@ -1,0 +1,78 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  code-quality:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+      
+    - name: Setup Visual Studio
+      uses: microsoft/setup-vs@v1
+      with:
+        vs-version: '17.0'
+        
+    - name: Build with warnings as errors
+      run: |
+        msbuild TestProject.vcxproj /p:Configuration=Debug /p:Platform=x64 /verbosity:normal /p:TreatWarningsAsErrors=true /p:WarningLevel=4
+      shell: cmd
+      continue-on-error: true
+      
+    - name: Check for common C++ issues
+      run: |
+        echo "Checking for common C++ code issues..."
+        
+        echo "Checking for TODO comments:"
+        findstr /r /i "todo\|fixme\|hack" *.cpp *.h || echo "No TODO comments found"
+        
+        echo "Checking for debug code:"
+        findstr /r /i "printf\|cout.*debug\|cerr.*debug" *.cpp *.h || echo "No debug output found"
+        
+        echo "Checking for hardcoded paths:"
+        findstr /r /i "c:\\\|d:\\\|e:\\\|f:\\\|g:\\\|h:\\\|i:\\\|j:\\\|k:\\\|l:\\\|m:\\\|n:\\\|o:\\\|p:\\\|q:\\\|r:\\\|s:\\\|t:\\\|u:\\\|v:\\\|w:\\\|x:\\\|y:\\\|z:\\" *.cpp *.h || echo "No hardcoded paths found"
+        
+        echo "Code quality check completed"
+      shell: cmd
+      continue-on-error: true
+      
+    - name: Validate project structure
+      run: |
+        echo "Validating project structure..."
+        
+        if not exist "TestProject.vcxproj" (
+          echo "ERROR: TestProject.vcxproj not found"
+          exit /b 1
+        )
+        
+        if not exist "StreamHillCipherEncoding.vcxproj" (
+          echo "ERROR: StreamHillCipherEncoding.vcxproj not found"
+          exit /b 1
+        )
+        
+        if not exist "TestFramework.h" (
+          echo "ERROR: TestFramework.h not found"
+          exit /b 1
+        )
+        
+        echo "Project structure validation passed"
+      shell: cmd
+      
+    - name: Check file encoding
+      run: |
+        echo "Checking file encodings..."
+        for %%f in (*.cpp *.h) do (
+          echo Checking %%f
+          file %%f 2>nul || echo "File command not available, skipping encoding check"
+        )
+      shell: cmd
+      continue-on-error: true

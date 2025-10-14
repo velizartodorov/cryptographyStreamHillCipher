@@ -4,6 +4,8 @@
 #include <vector>
 #include <functional>
 #include <cassert>
+#include <exception>
+#include <stdexcept>
 
 using namespace std;
 

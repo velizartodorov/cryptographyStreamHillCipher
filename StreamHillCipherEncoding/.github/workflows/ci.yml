@@ -1,0 +1,63 @@
+name: CI Tests
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  test:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+      
+    - name: Setup Visual Studio
+      uses: microsoft/setup-vs@v1
+      with:
+        vs-version: '17.0'
+        
+    - name: Restore NuGet packages (if any)
+      run: nuget restore
+      continue-on-error: true
+      
+    - name: Build Test Project
+      run: |
+        msbuild TestProject.vcxproj /p:Configuration=Debug /p:Platform=x64 /verbosity:minimal
+      shell: cmd
+      
+    - name: Run Tests
+      run: |
+        if exist "x64\Debug\TestProject.exe" (
+          echo "Running tests..."
+          x64\Debug\TestProject.exe
+          if %ERRORLEVEL% neq 0 (
+            echo "Tests failed with exit code %ERRORLEVEL%"
+            exit /b 1
+          )
+        ) else (
+          echo "Test executable not found!"
+          exit /b 1
+        )
+      shell: cmd
+      
+    - name: Build Main Project
+      run: |
+        msbuild StreamHillCipherEncoding.vcxproj /p:Configuration=Debug /p:Platform=x64 /verbosity:minimal
+      shell: cmd
+      continue-on-error: true
+      
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: |
+          x64/Debug/
+          *.log
+        retention-days: 7

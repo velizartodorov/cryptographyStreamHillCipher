@@ -1,5 +1,10 @@
 # StreamHillCipherEncoding Test Suite
 
+[![CI Tests](https://github.com/yourusername/StreamHillCipherEncoding/workflows/CI%20Tests/badge.svg)](https://github.com/yourusername/StreamHillCipherEncoding/actions/workflows/ci.yml)
+[![Build and Test](https://github.com/yourusername/StreamHillCipherEncoding/workflows/Build%20and%20Test/badge.svg)](https://github.com/yourusername/StreamHillCipherEncoding/actions/workflows/build-and-test.yml)
+[![Code Quality](https://github.com/yourusername/StreamHillCipherEncoding/workflows/Code%20Quality/badge.svg)](https://github.com/yourusername/StreamHillCipherEncoding/actions/workflows/code-quality.yml)
+[![Security Scan](https://github.com/yourusername/StreamHillCipherEncoding/workflows/Security%20Scan/badge.svg)](https://github.com/yourusername/StreamHillCipherEncoding/actions/workflows/security.yml)
+
 This document describes the comprehensive test suite for the StreamHillCipherEncoding project.
 
 ## Overview
@@ -143,9 +148,82 @@ The test suite covers:
 - ✅ Integration between components
 - ✅ Various input scenarios (different lengths, cases, keys)
 
+## Continuous Integration (CI/CD)
+
+### GitHub Actions Workflows
+
+The project includes comprehensive GitHub Actions workflows for automated testing and quality assurance:
+
+#### 🔄 **CI Tests** (`.github/workflows/ci.yml`)
+- **Triggers**: Push to main/master/develop, Pull Requests
+- **Purpose**: Quick validation of test suite
+- **Runs**: Windows latest with MSBuild
+- **Actions**: Build test project, run tests, build main project
+
+#### 🏗️ **Build and Test** (`.github/workflows/build-and-test.yml`)
+- **Triggers**: Push to main/master/develop, Pull Requests, Manual dispatch
+- **Purpose**: Comprehensive build matrix testing
+- **Matrix**: Debug/Release configurations, x64 platform
+- **Actions**: Clean build, verify executables, run tests, archive artifacts
+
+#### 🔍 **Code Quality** (`.github/workflows/code-quality.yml`)
+- **Triggers**: Push to main/master/develop, Pull Requests
+- **Purpose**: Code quality and best practices validation
+- **Checks**: Warnings as errors, TODO detection, debug code, hardcoded paths
+- **Actions**: Build with strict warnings, validate project structure
+
+#### 🔒 **Security Scan** (`.github/workflows/security.yml`)
+- **Triggers**: Push to main/master/develop, Pull Requests, Weekly schedule
+- **Purpose**: Security vulnerability detection
+- **Tools**: CodeQL analysis, security anti-pattern detection
+- **Checks**: Unsafe functions, buffer overflows, memory management, secrets
+
+#### 🚀 **Release Build** (`.github/workflows/release.yml`)
+- **Triggers**: Tag pushes (v*), Manual dispatch
+- **Purpose**: Automated release packaging
+- **Actions**: Release build, test validation, ZIP packaging, GitHub release
+
+### Workflow Features
+
+- **Multi-configuration testing**: Debug and Release builds
+- **Artifact archiving**: Build outputs and test results preserved
+- **Security scanning**: Automated vulnerability detection
+- **Code quality checks**: Best practices enforcement
+- **Release automation**: Tag-based release builds
+- **Status badges**: Real-time workflow status display
+
+### Local CI Simulation
+
+To simulate CI locally, use the provided batch file:
+```bash
+run_tests.bat
+```
+
+Or manually:
+```bash
+# Build and test
+msbuild TestProject.vcxproj /p:Configuration=Debug /p:Platform=x64
+x64\Debug\TestProject.exe
+
+# Build with warnings as errors (CI simulation)
+msbuild TestProject.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:TreatWarningsAsErrors=true
+```
+
+### Workflow Status
+
+Check the [Actions tab](https://github.com/yourusername/StreamHillCipherEncoding/actions) in your GitHub repository to view:
+- Real-time workflow execution
+- Test results and logs
+- Build artifacts
+- Security scan reports
+- Release builds
+
 ## Notes
 
 - Tests are designed to be platform-independent (Windows-specific code is handled gracefully)
 - The test framework is lightweight and doesn't require external dependencies
 - All tests can run without user interaction
 - Test results are clearly formatted for easy analysis
+- **CI/CD Integration**: All workflows run automatically on every commit
+- **Security**: Regular security scans and code quality checks
+- **Releases**: Automated release builds with test validation

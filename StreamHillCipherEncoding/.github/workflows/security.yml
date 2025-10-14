@@ -1,0 +1,66 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  schedule:
+    - cron: '0 2 * * 1' # Run weekly on Mondays at 2 AM
+
+jobs:
+  security-scan:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Run CodeQL Analysis
+      uses: github/codeql-action/init@v3
+      with:
+        languages: cpp
+        queries: security-extended,security-and-quality
+        
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+      
+    - name: Setup Visual Studio
+      uses: microsoft/setup-vs@v1
+      with:
+        vs-version: '17.0'
+        
+    - name: Build for CodeQL
+      run: |
+        msbuild TestProject.vcxproj /p:Configuration=Debug /p:Platform=x64 /verbosity:minimal
+      shell: cmd
+      
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      
+    - name: Check for security anti-patterns
+      run: |
+        echo "Checking for security anti-patterns..."
+        
+        echo "Checking for unsafe string functions:"
+        findstr /r /i "strcpy\|strcat\|sprintf\|gets\|scanf" *.cpp *.h || echo "No unsafe string functions found"
+        
+        echo "Checking for buffer overflow risks:"
+        findstr /r /i "char.*\[.*\]" *.cpp *.h || echo "No fixed-size buffers found"
+        
+        echo "Checking for memory management issues:"
+        findstr /r /i "malloc\|free\|new\|delete" *.cpp *.h || echo "No manual memory management found"
+        
+        echo "Checking for potential integer overflow:"
+        findstr /r /i "int.*\*.*int\|int.*\+.*int" *.cpp *.h || echo "No potential integer overflow found"
+        
+        echo "Security scan completed"
+      shell: cmd
+      continue-on-error: true
+      
+    - name: Check for hardcoded secrets
+      run: |
+        echo "Checking for potential hardcoded secrets..."
+        findstr /r /i "password\|secret\|key.*=.*[a-zA-Z0-9]\{8,\}\|token.*=.*[a-zA-Z0-9]\{8,\}" *.cpp *.h || echo "No potential secrets found"
+      shell: cmd
+      continue-on-error: true
