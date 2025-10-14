@@ -131,17 +131,11 @@
     <ClCompile Include="StreamCipher.cpp" />
     <ClCompile Include="StreamHillCipherEncoding.cpp" />
     <ClCompile Include="Utils.cpp" />
-    <ClCompile Include="TestRunner.cpp" />
-    <ClCompile Include="StreamCipherTest.cpp" />
-    <ClCompile Include="HillCipherTest.cpp" />
-    <ClCompile Include="UtilsTest.cpp" />
-    <ClCompile Include="IntegrationTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HillCipher.h" />
     <ClInclude Include="StreamCipher.h" />
     <ClInclude Include="Utils.h" />
-    <ClInclude Include="TestFramework.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
