@@ -1,0 +1,48 @@
+name: Workflow Status
+
+on:
+  workflow_run:
+    workflows: ["CI Tests", "Build and Test", "Code Quality", "Security Scan"]
+    types: [completed]
+
+jobs:
+  update-status:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion != 'skipped'
+    
+    steps:
+    - name: Check workflow status
+      run: |
+        echo "Workflow: ${{ github.event.workflow_run.name }}"
+        echo "Status: ${{ github.event.workflow_run.conclusion }}"
+        echo "URL: ${{ github.event.workflow_run.html_url }}"
+        
+        if [ "${{ github.event.workflow_run.conclusion }}" = "success" ]; then
+          echo "✅ Workflow passed"
+        elif [ "${{ github.event.workflow_run.conclusion }}" = "failure" ]; then
+          echo "❌ Workflow failed"
+        else
+          echo "⚠️ Workflow status: ${{ github.event.workflow_run.conclusion }}"
+        fi
+        
+    - name: Comment on PR (if applicable)
+      if: github.event.workflow_run.event == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const workflowName = '${{ github.event.workflow_run.name }}';
+          const conclusion = '${{ github.event.workflow_run.conclusion }}';
+          const url = '${{ github.event.workflow_run.html_url }}';
+          
+          let emoji = '⚠️';
+          if (conclusion === 'success') emoji = '✅';
+          else if (conclusion === 'failure') emoji = '❌';
+          
+          const comment = `${emoji} **${workflowName}** ${conclusion}\n\n[View details](${url})`;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });

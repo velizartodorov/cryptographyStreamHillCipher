@@ -1,0 +1,111 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch: # Allow manual triggering
+
+env:
+  BUILD_CONFIGURATION: Debug
+  BUILD_PLATFORM: x64
+
+jobs:
+  build-and-test:
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+        platform: [x64]
+        include:
+          - configuration: Debug
+            platform: x64
+          - configuration: Release
+            platform: x64
+    
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+      
+    - name: Display build information
+      run: |
+        echo "Building configuration: ${{ matrix.configuration }}"
+        echo "Building platform: ${{ matrix.platform }}"
+        echo "MSBuild version:"
+        msbuild /version
+        echo "Project structure:"
+        dir /b
+      shell: cmd
+      
+    - name: Clean previous builds
+      run: |
+        if exist "x64" rmdir /s /q x64
+        if exist "Debug" rmdir /s /q Debug
+        if exist "Release" rmdir /s /q Release
+      shell: cmd
+      continue-on-error: true
+      
+    - name: Build Test Project
+      run: |
+        echo "Building TestProject.vcxproj in ${{ matrix.configuration }} configuration..."
+        msbuild TestProject.vcxproj /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /verbosity:minimal /p:WarningLevel=0
+      shell: cmd
+      
+    - name: Verify Test Executable
+      run: |
+        if exist "${{ matrix.platform }}\${{ matrix.configuration }}\TestProject.exe" (
+          echo "✓ Test executable found successfully"
+          dir "${{ matrix.platform }}\${{ matrix.configuration }}\TestProject.exe"
+        ) else (
+          echo "✗ Test executable not found!"
+          echo "Contents of build directory:"
+          dir "${{ matrix.platform }}\${{ matrix.configuration }}\" /s
+          exit /b 1
+        )
+      shell: cmd
+      
+    - name: Run Test Suite
+      run: |
+        echo "Starting test execution for ${{ matrix.configuration }} build..."
+        "${{ matrix.platform }}\${{ matrix.configuration }}\TestProject.exe"
+        if %ERRORLEVEL% neq 0 (
+          echo "Tests completed with exit code: %ERRORLEVEL%"
+          exit /b %ERRORLEVEL%
+        ) else (
+          echo "✓ All tests passed successfully in ${{ matrix.configuration }} configuration!"
+        )
+      shell: cmd
+      
+    - name: Build Main Project
+      run: |
+        echo "Building main project in ${{ matrix.configuration }} configuration..."
+        msbuild StreamHillCipherEncoding.vcxproj /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /verbosity:minimal /p:WarningLevel=0
+      shell: cmd
+      continue-on-error: true
+      
+    - name: Archive build artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: build-artifacts-${{ matrix.configuration }}-${{ matrix.platform }}
+        path: |
+          ${{ matrix.platform }}/${{ matrix.configuration }}/
+          *.log
+          *.pdb
+        retention-days: 7
+        
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results-${{ matrix.configuration }}-${{ matrix.platform }}
+        path: |
+          ${{ matrix.platform }}/${{ matrix.configuration }}/TestProject.exe
+          test-output.log
+        retention-days: 30
+      continue-on-error: true

@@ -1,0 +1,80 @@
+name: CI Tests
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  test:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+      
+    - name: Display project structure
+      run: |
+        echo "Project structure:"
+        dir /b
+        echo "Test files:"
+        dir /b *Test*.cpp
+        echo "Project files:"
+        dir /b *.vcxproj
+      shell: cmd
+        
+    - name: Restore NuGet packages (if any)
+      run: nuget restore
+      continue-on-error: true
+      
+    - name: Build Test Project
+      run: |
+        echo "Building TestProject.vcxproj..."
+        msbuild TestProject.vcxproj /p:Configuration=Debug /p:Platform=x64 /verbosity:minimal /p:WarningLevel=0
+      shell: cmd
+      
+    - name: Verify Test Executable
+      run: |
+        if exist "x64\Debug\TestProject.exe" (
+          echo "✓ Test executable found successfully"
+          dir "x64\Debug\TestProject.exe"
+        ) else (
+          echo "✗ Test executable not found!"
+          echo "Contents of x64\Debug\:"
+          dir "x64\Debug\" /s
+          exit /b 1
+        )
+      shell: cmd
+      
+    - name: Run Tests
+      run: |
+        echo "Running test suite..."
+        "x64\Debug\TestProject.exe"
+        if %ERRORLEVEL% neq 0 (
+          echo "Tests failed with exit code %ERRORLEVEL%"
+          exit /b %ERRORLEVEL%
+        ) else (
+          echo "✓ All tests passed successfully!"
+        )
+      shell: cmd
+      
+    - name: Build Main Project
+      run: |
+        echo "Building main project..."
+        msbuild StreamHillCipherEncoding.vcxproj /p:Configuration=Debug /p:Platform=x64 /verbosity:minimal /p:WarningLevel=0
+      shell: cmd
+      continue-on-error: true
+      
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: |
+          x64/Debug/
+          *.log
+        retention-days: 7
