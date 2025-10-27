@@ -78,7 +78,7 @@ jobs:
       shell: cmd
       
     - name: Upload release artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: release-${{ steps.version.outputs.version }}
         path: |
