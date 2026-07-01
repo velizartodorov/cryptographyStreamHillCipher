@@ -27,7 +27,7 @@ public:
         testCases.push_back({name, testFunction, false, ""});
     }
 
-    void runAllTests() {
+    int runAllTests() {
         cout << "Running " << testCases.size() << " tests...\n\n";
         
         int passed = 0;
@@ -64,6 +64,8 @@ public:
                 }
             }
         }
+
+        return failed;
     }
 
 private:

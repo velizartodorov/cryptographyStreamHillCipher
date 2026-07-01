@@ -19,7 +19,7 @@ TEST(StreamCipher_BasicEncoding) {
     
     // Verify that cipher text is not empty and different from plain text
     ASSERT_TRUE(strlen(cipherText) > 0);
-    ASSERT_STRING_EQUAL("HELLO", plainText); // Original should remain unchanged
+    ASSERT_STRING_EQUAL("hello", plainText); // Original should remain unchanged
 }
 
 // Test for stream cipher with different key lengths

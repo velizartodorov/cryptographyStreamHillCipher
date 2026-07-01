@@ -13,20 +13,12 @@ void StreamCipher::encode(char* plain_text, char* cipher_text, char* char_key)
 	cout << endl << " Key: " << endl;
 	Utils::displayText(char_key, alphabet_num, key_length);
 
-	_getche();
-
 	Utils::displayNumber(alphabet_num, key_length);
-
-	_getche();
 
 	cout << endl << " Plain text: " << endl;
 	Utils::displayText(plain_text, alphabet_num, plain_length);
 
-	_getche();
-
 	Utils::displayNumber(alphabet_num, plain_length);
-
-	_getche();
 
 	cout << endl;
 
@@ -52,8 +44,6 @@ void StreamCipher::encode(char* plain_text, char* cipher_text, char* char_key)
 			j = 0;
 		}
 	}
-
-	_getche();
 
 	cout << endl << endl;
 

@@ -9,10 +9,5 @@ int main() {
     cout << "===================================\n\n";
     
     // Run all registered tests
-    TestFramework::getInstance().runAllTests();
-    
-    cout << "\nPress any key to exit...";
-    cin.get();
-    
-    return 0;
+    return TestFramework::getInstance().runAllTests();
 }

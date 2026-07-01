@@ -42,17 +42,11 @@ void HillCipher::encode(char* plain_txt, int matrix_key[25][25])
 		cout << endl << " Length of plain text is correct." << endl;
 	}
 
-	_getche();
-
 	cout << endl << " Key Matrix: ";
 	Utils::displayMatrix(2, 2, matrix_key);
 
-	_getche();
-
 	Utils::displayText(plain_txt, alphabet_num, str_length);
 	Utils::displayNumber(alphabet_num, str_length);
-
-	_getche();
 
 	// Calculating rows of alphabet_matrix
 
@@ -70,12 +64,8 @@ void HillCipher::encode(char* plain_txt, int matrix_key[25][25])
 		}
 	}
 
-	_getche();
-
 	cout << endl << " Matrix of plain text:";
 	Utils::displayMatrix(row_count, 2, alphabet_matrix);
-
-	_getche();
 
 	// Multiplying and visualizing key matrix with matrix of text;
 
