@@ -9,7 +9,10 @@ on:
 jobs:
   test:
     runs-on: windows-latest
-    
+    defaults:
+      run:
+        working-directory: StreamHillCipherEncoding
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -58,6 +61,6 @@ jobs:
       with:
         name: test-results
         path: |
-          x64/Debug/
-          *.log
+          StreamHillCipherEncoding/x64/Debug/
+          StreamHillCipherEncoding/*.log
         retention-days: 7
