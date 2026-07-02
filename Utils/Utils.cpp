@@ -156,7 +156,10 @@ namespace {
 #ifdef _WIN32
         system("cls");
 #else
-        system("clear");
+        // Raw ANSI escape sequence instead of shelling out to `clear`, which
+        // prints "TERM environment variable not set" when TERM is unset
+        // (e.g. in a Docker container without -e TERM=...).
+        cout << "\033[2J\033[H";
 #endif
     }
 
