@@ -163,12 +163,12 @@ StreamCipher streamCipher;
 HillCipher hillCipher;
 
 // Encryption keys
-char streamKey[] = "key";
-int hillMatrix[2][2] = {{3, 3}, {2, 5}};
+string streamKey = "key";
+Matrix hillMatrix = {{3, 3}, {2, 5}};
 
 // Encrypt
-char plainText[] = "hello";
-char cipherText[50];
+string plainText = "hello";
+string cipherText;
 
 streamCipher.encode(plainText, cipherText, streamKey);
 hillCipher.encode(cipherText, hillMatrix);

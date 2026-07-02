@@ -134,7 +134,12 @@ namespace {
 
     char Utils::numberToLetter(int value)
     {
-        return static_cast<char>((value % 26) + 'A');
+        int wrapped = value % 26;
+        if (wrapped < 0)
+        {
+            wrapped += 26;
+        }
+        return static_cast<char>(wrapped + 'A');
     }
 
     void Utils::setConsoleColors()

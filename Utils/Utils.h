@@ -16,7 +16,7 @@ public:
     static void displayMatrix(const Matrix& matrix);
     static void displayText(const string& text, vector<int>& alphabetNum);
     static void displayNumber(const vector<int>& numArray);
-    static char numberToLetter(int value); // value must be non-negative
+    static char numberToLetter(int value); // wraps to A-Z for any int, including negatives
 
     // Platform-abstracted console control (Windows: cmd built-ins; else: POSIX equivalents)
     static void setConsoleColors();
