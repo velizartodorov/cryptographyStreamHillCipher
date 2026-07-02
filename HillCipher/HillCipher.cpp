@@ -5,9 +5,9 @@ using namespace std;
 
 jmp_buf resume_here;
 
-void HillCipher::encode(char* plain_txt, int matrix_key[25][25])
+void HillCipher::encode(string& plain_txt, const vector<vector<int>>& matrix_key)
 {
-	int row_count, i, j, k, str_length, alphabet_num[50], alphabet_matrix[25][25], result_matrix[25][25];
+	int n = static_cast<int>(matrix_key.size()); // block size: matrix_key is n x n
 
 	if (setjmp(resume_here) != 0)
 	{
@@ -16,26 +16,22 @@ void HillCipher::encode(char* plain_txt, int matrix_key[25][25])
 
 	cout << endl << " --- Hill cipher --- " << endl;
 
-	// Modding plain_text
+	// Padding plain_text so its length is a multiple of n
 
-	str_length = strlen(plain_txt);
+	int str_length = static_cast<int>(plain_txt.length());
+	int remainder = str_length % n;
 
-	if (str_length % 2 != 0)
+	if (remainder != 0)
 	{
-		cout << endl << " Length of plain text is odd number - " << str_length << " symbols!";
+		int pad_count = n - remainder;
+		cout << endl << " Length of plain text is " << str_length << " symbols, not a multiple of " << n << "!";
 
-		if (97 <= plain_txt[0] && plain_txt[0] <= 122)
-		{
-			plain_txt[str_length] = 'x';
-		}
-		else if (65 <= plain_txt[0] && plain_txt[0] <= 90)
-		{
-			plain_txt[str_length] = 'X';
-		}
-		plain_txt[str_length + 1] = '\0';
-		str_length++;
+		char pad_char = (97 <= plain_txt[0] && plain_txt[0] <= 122) ? 'x' : 'X';
+		plain_txt.append(pad_count, pad_char);
+
 		cout << " Corrected plain text:" << endl;
-		Utils::displayText(plain_txt, alphabet_num, str_length);
+		vector<int> padded_alphabet_num;
+		Utils::displayText(plain_txt, padded_alphabet_num);
 	}
 	else
 	{
@@ -43,38 +39,40 @@ void HillCipher::encode(char* plain_txt, int matrix_key[25][25])
 	}
 
 	cout << endl << " Key Matrix: ";
-	Utils::displayMatrix(2, 2, matrix_key);
+	Utils::displayMatrix(matrix_key);
 
-	Utils::displayText(plain_txt, alphabet_num, str_length);
-	Utils::displayNumber(alphabet_num, str_length);
+	vector<int> alphabet_num;
+	Utils::displayText(plain_txt, alphabet_num);
+	Utils::displayNumber(alphabet_num);
 
 	// Calculating rows of alphabet_matrix
 
-	str_length = strlen(plain_txt);
-	row_count = str_length / 2;
+	str_length = static_cast<int>(plain_txt.length());
+	int row_count = str_length / n;
 	cout << endl << " Row count of plain text matrix: " << row_count << endl;
 
-	//  Transforming values of alphabet_num into 2D
+	// Transforming values of alphabet_num into 2D
 
-	for (i = 0; i < row_count; i++)
+	vector<vector<int>> alphabet_matrix(row_count, vector<int>(n));
+	for (int i = 0; i < row_count; i++)
 	{
-		for (j = 0; j < 2; j++)
+		for (int j = 0; j < n; j++)
 		{
-			alphabet_matrix[i][j] = alphabet_num[i * 2 + j];
+			alphabet_matrix[i][j] = alphabet_num[i * n + j];
 		}
 	}
 
 	cout << endl << " Matrix of plain text:";
-	Utils::displayMatrix(row_count, 2, alphabet_matrix);
+	Utils::displayMatrix(alphabet_matrix);
 
 	// Multiplying and visualizing key matrix with matrix of text;
 
-	for (i = 0; i < row_count; i++)
+	vector<vector<int>> result_matrix(row_count, vector<int>(n, 0));
+	for (int i = 0; i < row_count; i++)
 	{
-		for (j = 0; j < 2; j++)
+		for (int j = 0; j < n; j++)
 		{
-			result_matrix[i][j] = 0;
-			for (k = 0; k < 2; k++)
+			for (int k = 0; k < n; k++)
 			{
 				result_matrix[i][j] += (alphabet_matrix[i][k] * matrix_key[k][j]);
 			}
@@ -82,12 +80,12 @@ void HillCipher::encode(char* plain_txt, int matrix_key[25][25])
 	}
 
 	cout << endl << " Calculated matrix: ";
-	Utils::displayMatrix(row_count, 2, result_matrix);
+	Utils::displayMatrix(result_matrix);
 
 	cout << endl << " Encrypted equivalent of '" << plain_txt << "' is: " << endl << endl;
-	for (i = 0; i < row_count; ++i)
+	for (int i = 0; i < row_count; ++i)
 	{
-		for (j = 0; j < 2; ++j)
+		for (int j = 0; j < n; ++j)
 		{
 			cout << " " << (char)((result_matrix[i][j]) % 26 + 65);
 		}

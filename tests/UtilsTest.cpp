@@ -1,7 +1,8 @@
 #include "TestFramework.h"
 #include "Utils.h"
 #include <cstring>
-#include <iostream>
+#include <string>
+#include <vector>
 
 // Mirrors the lowercase-only check Utils::inputCheck performs before its
 // longjmp-based retry loop, which is impractical to exercise directly in a test.
@@ -18,34 +19,24 @@ static bool isAllLowercase(const char* text) {
 struct DisplayTextCase {
     const char* name;
     const char* text;
-    int length; // 0 = process the full string
 };
 
 static const DisplayTextCase displayTextCases[] = {
-    {"Lowercase", "hello", 0},
-    {"Uppercase", "HELLO", 0},
-    {"MixedCase", "HeLlO", 0},
-    {"WithLength", "hello", 3}, // only first 3 characters should be processed
+    {"Lowercase", "hello"},
+    {"Uppercase", "HELLO"},
+    {"MixedCase", "HeLlO"},
 };
 
 // h,e,l,l,o -> 7,4,11,11,14 regardless of case
-static const int expectedAlphabetNums[] = {7, 4, 11, 11, 14};
+static const vector<int> expectedAlphabetNums = {7, 4, 11, 11, 14};
 
-// Test for displayText function across case variations and the length-limited overload
+// Test for displayText function across case variations
 TEST(Utils_DisplayText_AllCases) {
     for (const auto& c : displayTextCases) {
-        char text[16];
-        strcpy_s(text, sizeof(text), c.text);
-        int alphabetNum[50];
-        int checkCount = c.length > 0 ? c.length : 5;
+        vector<int> alphabetNum;
+        Utils::displayText(c.text, alphabetNum);
 
-        if (c.length > 0) {
-            Utils::displayText(text, alphabetNum, c.length);
-        } else {
-            Utils::displayText(text, alphabetNum);
-        }
-
-        for (int i = 0; i < checkCount; i++) {
+        for (size_t i = 0; i < expectedAlphabetNums.size(); i++) {
             ASSERT_EQUAL(expectedAlphabetNums[i], alphabetNum[i]);
         }
     }
@@ -53,20 +44,19 @@ TEST(Utils_DisplayText_AllCases) {
 
 // Test for displayNumber function
 TEST(Utils_DisplayNumber) {
-    int numArray[50] = {0, 1, 2, 3, 4, 5};
-    int length = 6;
-    
+    vector<int> numArray = {0, 1, 2, 3, 4, 5};
+
     // This function only displays, so we just verify it doesn't crash
-    Utils::displayNumber(numArray, length);
+    Utils::displayNumber(numArray);
     ASSERT_TRUE(true);
 }
 
 // Test for displayMatrix function
 TEST(Utils_DisplayMatrix) {
-    int matrix[25][25] = {{1, 2}, {3, 4}};
-    
+    vector<vector<int>> matrix = {{1, 2}, {3, 4}};
+
     // This function only displays, so we just verify it doesn't crash
-    Utils::displayMatrix(2, 2, matrix);
+    Utils::displayMatrix(matrix);
     ASSERT_TRUE(true);
 }
 

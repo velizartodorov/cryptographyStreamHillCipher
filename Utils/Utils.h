@@ -2,19 +2,20 @@
 #include <csetjmp>
 #include <cstring>
 #include <iostream>
+#include <string>
+#include <vector>
 #include <conio.h>
 
 using namespace std;
 
 class Utils {
 public:
-    
-    static void validateInput(char char_key[50], char plain_text[50], char cipher_text[50], int matrix_key[25][25]);
-    static void inputCheck(char* text, int str_length);
-    static void displayMatrix(int row, int column, int matrix[25][25]);
-    static void displayText(char* display_text, int alphabet_num[50]);
-    static void displayText(char* display_text, int alphabet_num[50], int str_length);
-    static void displayNumber(int num_array[50], int str_length);
+
+    static void validateInput(string& char_key, string& plain_text, vector<vector<int>>& matrix_key);
+    static void inputCheck(const string& text);
+    static void displayMatrix(const vector<vector<int>>& matrix);
+    static void displayText(const string& display_text, vector<int>& alphabet_num);
+    static void displayNumber(const vector<int>& num_array);
 
 private:
     static jmp_buf resume_here;

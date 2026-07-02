@@ -1,10 +1,10 @@
 #include "TestFramework.h"
 #include "StreamCipher.h"
 #include "Utils.h"
+#include <string>
 #include <cstring>
-#include <iostream>
 
-static void encodeStream(char* plainText, char* cipherText, char* key) {
+static void encodeStream(const string& plainText, string& cipherText, const string& key) {
     StreamCipher cipher;
     cipher.encode(plainText, cipherText, key);
 }
@@ -26,20 +26,16 @@ static const StreamCase streamCases[] = {
 };
 
 // Test for stream cipher encoding across text/key variations. In every accepted
-// case, the cipher text should be the same length as the plain text and the
-// plain text buffer should be left unmodified.
+// case, the cipher text should be the same length as the plain text. plain_text
+// is taken by const reference, so mutation is ruled out at compile time.
 // Note: The original implementation uses _getche() which requires user input;
 // encodeStream/StreamCipher::encode here sidestep that for testing.
 TEST(StreamCipher_AllCases) {
     for (const auto& c : streamCases) {
-        char plainText[32];
-        char key[32];
-        char cipherText[50];
-        strcpy_s(plainText, sizeof(plainText), c.plainText);
-        strcpy_s(key, sizeof(key), c.key);
+        string cipherText;
 
         try {
-            encodeStream(plainText, cipherText, key);
+            encodeStream(c.plainText, cipherText, c.key);
         } catch (...) {
             if (c.tolerateException) {
                 continue;
@@ -47,12 +43,9 @@ TEST(StreamCipher_AllCases) {
             throw;
         }
 
-        if (strlen(cipherText) != strlen(c.plainText)) {
+        if (cipherText.length() != strlen(c.plainText)) {
             throw runtime_error(string("Case '") + c.name + "': cipher length " +
-                to_string(strlen(cipherText)) + " != plain length " + to_string(strlen(c.plainText)));
-        }
-        if (strcmp(plainText, c.plainText) != 0) {
-            throw runtime_error(string("Case '") + c.name + "': plain text was mutated");
+                to_string(cipherText.length()) + " != plain length " + to_string(strlen(c.plainText)));
         }
     }
 }

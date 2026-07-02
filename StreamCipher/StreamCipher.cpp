@@ -1,33 +1,38 @@
-#include "StreamCipher.h"	
+#include "StreamCipher.h"
 #include "Utils.h"
+#include <vector>
 
-void StreamCipher::encode(char* plain_text, char* cipher_text, char* char_key)
+using namespace std;
+
+void StreamCipher::encode(const string& plain_text, string& cipher_text, const string& char_key)
 {
-	int key_length = strlen(char_key);
-	int plain_length = strlen(plain_text);
-	int j = 0, i = 0, alphabet_num[50];
-	char temp_key[64];
+	int key_length = static_cast<int>(char_key.length());
+	int plain_length = static_cast<int>(plain_text.length());
+	int j = 0, i = 0;
+	vector<int> alphabet_num;
 
 	cout << endl << " --- Stream Cipher --- " << endl;
 
 	cout << endl << " Key: " << endl;
-	Utils::displayText(char_key, alphabet_num, key_length);
+	Utils::displayText(char_key, alphabet_num);
 
-	Utils::displayNumber(alphabet_num, key_length);
+	Utils::displayNumber(alphabet_num);
 
 	cout << endl << " Plain text: " << endl;
-	Utils::displayText(plain_text, alphabet_num, plain_length);
+	Utils::displayText(plain_text, alphabet_num);
 
-	Utils::displayNumber(alphabet_num, plain_length);
+	Utils::displayNumber(alphabet_num);
 
 	cout << endl;
 
-	strcpy_s(temp_key, char_key);
+	vector<int> temp_key(key_length);
 	for (i = 0; i < key_length; i++)
 	{
-		temp_key[i] = temp_key[i] - 97;
-		cout << " " << (int)temp_key[i];
+		temp_key[i] = char_key[i] - 97;
+		cout << " " << temp_key[i];
 	}
+
+	cipher_text.resize(plain_length);
 
 	for (i = 0; i < plain_length; i++)
 	{
@@ -59,6 +64,5 @@ void StreamCipher::encode(char* plain_text, char* cipher_text, char* char_key)
 		cipher_text[i] = cipher_text[i] + 65;
 		cout << ' ' << cipher_text[i];
 	}
-	cipher_text[i] = '\0';
 	cout << endl;
 }

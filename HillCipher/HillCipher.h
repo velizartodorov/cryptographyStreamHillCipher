@@ -1,4 +1,7 @@
+#include <string>
+#include <vector>
+
 class HillCipher {
 	public:
-		void encode(char* plain_txt, int matrix_key[25][25]);
+		void encode(std::string& plain_txt, const std::vector<std::vector<int>>& matrix_key);
 };
