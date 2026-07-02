@@ -1,18 +1,28 @@
 #include "HillCipher.h"
 #include "Utils.h"
-
-jmp_buf resumeHere;
+#include <cctype>
+#include <stdexcept>
 
 void HillCipher::encode(string& plainTxt, const Matrix& matrixKey)
 {
 	int n = static_cast<int>(matrixKey.size()); // block size: matrixKey is n x n
 
-	if (setjmp(resumeHere) != 0)
+	if (n <= 0)
 	{
-		cout << "" << endl;
+		throw invalid_argument("HillCipher::encode: matrixKey must be non-empty");
+	}
+	for (const auto& row : matrixKey)
+	{
+		if (static_cast<int>(row.size()) != n)
+		{
+			throw invalid_argument("HillCipher::encode: matrixKey must be square");
+		}
 	}
 
 	cout << endl << " --- Hill cipher --- " << endl;
+
+	cout << endl << " Key Matrix: ";
+	Utils::displayMatrix(matrixKey);
 
 	// Padding plainTxt so its length is a multiple of n
 
@@ -24,20 +34,15 @@ void HillCipher::encode(string& plainTxt, const Matrix& matrixKey)
 		int padCount = n - remainder;
 		cout << endl << " Length of plain text is " << strLength << " symbols, not a multiple of " << n << "!";
 
-		char padChar = (97 <= plainTxt[0] && plainTxt[0] <= 122) ? 'x' : 'X';
+		char padChar = islower(static_cast<unsigned char>(plainTxt[0])) ? 'x' : 'X';
 		plainTxt.append(padCount, padChar);
 
 		cout << " Corrected plain text:" << endl;
-		vector<int> paddedAlphabetNum;
-		Utils::displayText(plainTxt, paddedAlphabetNum);
 	}
 	else
 	{
 		cout << endl << " Length of plain text is correct." << endl;
 	}
-
-	cout << endl << " Key Matrix: ";
-	Utils::displayMatrix(matrixKey);
 
 	vector<int> alphabetNum;
 	Utils::displayText(plainTxt, alphabetNum);
@@ -85,7 +90,7 @@ void HillCipher::encode(string& plainTxt, const Matrix& matrixKey)
 	{
 		for (int j = 0; j < n; ++j)
 		{
-			cout << " " << (char)((resultMatrix[i][j]) % 26 + 65);
+			cout << " " << Utils::numberToLetter(resultMatrix[i][j]);
 		}
 	}
 	cout << endl << endl;

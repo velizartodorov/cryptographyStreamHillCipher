@@ -44,3 +44,30 @@ TEST(HillCipher_AllCases) {
         }
     }
 }
+
+struct InvalidHillCase {
+    const char* name;
+    Matrix matrixKey;
+};
+
+static const InvalidHillCase invalidMatrixCases[] = {
+    {"EmptyMatrix", Matrix()},
+    {"NonSquareMatrix", {{1, 0, 0}, {0, 1, 0}}}, // well-formed (2x3) but not square
+};
+
+// Test that encode() rejects an empty or non-square matrixKey with an
+// invalid_argument instead of crashing (divide-by-zero / out-of-bounds read).
+TEST(HillCipher_InvalidMatrix_Throws) {
+    for (const auto& tc : invalidMatrixCases) {
+        string plainText = "hello";
+        bool threw = false;
+        try {
+            encodeHill(plainText, tc.matrixKey);
+        } catch (const invalid_argument&) {
+            threw = true;
+        }
+        if (!threw) {
+            throw runtime_error(string("Case '") + tc.name + "' should have thrown invalid_argument");
+        }
+    }
+}

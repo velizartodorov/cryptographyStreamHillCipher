@@ -140,6 +140,7 @@
     <ClCompile Include="tests\HillCipherTest.cpp" />
     <ClCompile Include="tests\UtilsTest.cpp" />
     <ClCompile Include="tests\IntegrationTest.cpp" />
+    <ClCompile Include="tests\MatrixTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HillCipher\HillCipher.h" />

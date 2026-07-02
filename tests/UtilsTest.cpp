@@ -1,21 +1,8 @@
 #include "TestFramework.h"
 #include "Utils.h"
 #include "Matrix.h"
-#include <cstring>
 #include <string>
 #include <vector>
-
-// Mirrors the lowercase-only check Utils::inputCheck performs before its
-// longjmp-based retry loop, which is impractical to exercise directly in a test.
-static bool isAllLowercase(const char* text) {
-    int length = strlen(text);
-    for (int i = 0; i < length; i++) {
-        if (!(97 <= text[i] && text[i] <= 122)) {
-            return false;
-        }
-    }
-    return true;
-}
 
 struct DisplayTextCase {
     const char* name;
@@ -72,15 +59,13 @@ static const LowercaseCheckCase lowercaseCheckCases[] = {
     {"InvalidNumbers", "hello123", false},
     {"Uppercase", "HELLO", false}, // Uppercase should be invalid according to the logic
     {"SpecialCharacters", "hello!@#", false},
-    {"EmptyString", "", true}, // Empty string should be valid (no invalid characters)
+    {"EmptyString", "", false}, // Empty string is rejected so validateInput can't be tricked into an empty key
 };
 
-// Test for inputCheck function's lowercase-only rule across representative inputs.
-// This function uses longjmp which makes it difficult to test directly,
-// so we test the lowercase-check logic indirectly via isAllLowercase.
-TEST(Utils_InputCheck_AllCases) {
+// Test for Utils::isLowercaseOnly across representative inputs.
+TEST(Utils_IsLowercaseOnly_AllCases) {
     for (const auto& c : lowercaseCheckCases) {
-        bool result = isAllLowercase(c.text);
+        bool result = Utils::isLowercaseOnly(c.text);
         if (result != c.expected) {
             throw runtime_error(string("Case '") + c.name + "': expected " +
                 (c.expected ? "true" : "false") + " but got " + (result ? "true" : "false"));

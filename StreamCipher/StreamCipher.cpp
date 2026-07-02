@@ -1,9 +1,15 @@
 #include "StreamCipher.h"
 #include "Utils.h"
+#include <stdexcept>
 #include <vector>
 
 void StreamCipher::encode(const string& plainText, string& cipherText, const string& charKey)
 {
+	if (charKey.empty())
+	{
+		throw invalid_argument("StreamCipher::encode: charKey must not be empty");
+	}
+
 	int keyLength = static_cast<int>(charKey.length());
 	int plainLength = static_cast<int>(plainText.length());
 	int j = 0, i = 0;
@@ -26,7 +32,7 @@ void StreamCipher::encode(const string& plainText, string& cipherText, const str
 	vector<int> tempKey(keyLength);
 	for (i = 0; i < keyLength; i++)
 	{
-		tempKey[i] = charKey[i] - 97;
+		tempKey[i] = charKey[i] - 'a';
 		cout << " " << tempKey[i];
 	}
 
@@ -34,7 +40,7 @@ void StreamCipher::encode(const string& plainText, string& cipherText, const str
 
 	for (i = 0; i < plainLength; i++)
 	{
-		cipherText[i] = ((plainText[i] - 97) + tempKey[j]) % 26;
+		cipherText[i] = ((plainText[i] - 'a') + tempKey[j]) % 26;
 		j++;
 		if (j == keyLength)
 		{
@@ -59,7 +65,7 @@ void StreamCipher::encode(const string& plainText, string& cipherText, const str
 
 	for (i = 0; i < plainLength; i++)
 	{
-		cipherText[i] = cipherText[i] + 65;
+		cipherText[i] = Utils::numberToLetter(static_cast<unsigned char>(cipherText[i]));
 		cout << ' ' << cipherText[i];
 	}
 	cout << endl;

@@ -49,3 +49,17 @@ TEST(StreamCipher_AllCases) {
         }
     }
 }
+
+// Test that encode() rejects an empty key with an invalid_argument instead of
+// an out-of-bounds vector access (tempKey[j] would be indexed before the
+// keyLength==0 case was ever handled).
+TEST(StreamCipher_EmptyKey_Throws) {
+    string cipherText;
+    bool threw = false;
+    try {
+        encodeStream("hello", cipherText, "");
+    } catch (const invalid_argument&) {
+        threw = true;
+    }
+    ASSERT_TRUE(threw);
+}

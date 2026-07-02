@@ -1,61 +1,84 @@
 #include "Utils.h"
-
-jmp_buf Utils::resumeHere;
+#include <limits>
 
     void Utils::validateInput(string& charKey, string& plainText, Matrix& matrixKey) {
         system("color F0");
 
-        if (setjmp(resumeHere) != 0)
-        {
-            cout << "";
-        }
         cout << endl << " --- Stream and Hill ciphers --- " << endl;
 
-        cout << endl << " Enter plain text: ";
-        cin >> plainText;
+        bool valid;
+        do {
+            cout << endl << " Enter plain text: ";
+            cin >> plainText;
+            valid = isLowercaseOnly(plainText);
+            if (!valid) {
+                system("CLS");
+                cout << endl << " Enter text: (a-z)!" << endl;
+            }
+        } while (!valid);
 
-        inputCheck(plainText);
+        do {
+            cout << endl << " Enter stream key: ";
+            cin >> charKey;
+            valid = isLowercaseOnly(charKey);
+            if (!valid) {
+                system("CLS");
+                cout << endl << " Enter text: (a-z)!" << endl;
+            }
+        } while (!valid);
 
-        if (setjmp(resumeHere) != 0)
-        {
-            cout << "";
-        }
+        int n;
+        do {
+            cout << endl << " Enter Hill cipher matrix size (N for an N x N key matrix): ";
+            cin >> n;
+            if (cin.fail()) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                n = 0;
+            }
+            if (n <= 0) {
+                cout << endl << " Matrix size must be a positive whole number!" << endl;
+            }
+        } while (n <= 0);
 
-        cout << endl << " Enter stream key: ";
-        cin >> charKey;
-
-       inputCheck(charKey);
-
-       int n;
-       cout << endl << " Enter Hill cipher matrix size (N for an N x N key matrix): ";
-       cin >> n;
-
-       matrixKey = Matrix(n, n);
-       cout << endl << " Enter Hill key (matrix [" << n << " x " << n << "]):" << endl;
+        matrixKey = Matrix(n, n);
+        cout << endl << " Enter Hill key (matrix [" << n << " x " << n << "]):" << endl;
 
         for (int i = 0; i < n; i++)
         {
             for (int j = 0; j < n; j++)
             {
-                cout << endl << " Value [" << i + 1 << "," << j + 1 << "]: ";
-                cin >> matrixKey[i][j];
+                int value;
+                do {
+                    cout << endl << " Value [" << i + 1 << "," << j + 1 << "] (0-25): ";
+                    cin >> value;
+                    if (cin.fail()) {
+                        cin.clear();
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                        value = -1;
+                    }
+                    if (value < 0 || value > 25) {
+                        cout << " Value must be between 0 and 25!" << endl;
+                    }
+                } while (value < 0 || value > 25);
+                matrixKey[i][j] = value;
             }
         }
     }
 
-    void Utils::inputCheck(const string& text)
+    bool Utils::isLowercaseOnly(const string& text)
     {
-        int strLength = static_cast<int>(text.length());
-
-        for (int i = 0; i < strLength; i++)
+        if (text.empty()) {
+            return false;
+        }
+        for (char c : text)
         {
-            if (!(97 <= text[i] && text[i] <= 122))
+            if (!islower(static_cast<unsigned char>(c)))
             {
-                system("CLS");
-                cout << endl << " Enter text: (a-z)!" << endl;
-                longjmp(resumeHere, 1);
+                return false;
             }
         }
+        return true;
     }
 
     void Utils::displayMatrix(const Matrix& matrix) {
@@ -73,12 +96,12 @@ jmp_buf Utils::resumeHere;
         cout << "\n";
         for (int i = 0; i < n; ++i) {
             unsigned char c = static_cast<unsigned char>(text[i]);
-            if (97 <= c && c <= 122) {
-                alphabetNum[i] = c - 97;
+            if (islower(c)) {
+                alphabetNum[i] = c - 'a';
                 cout << " " << static_cast<char>(toupper(c));
             }
-            else if (65 <= c && c <= 90) {
-                alphabetNum[i] = c - 65;
+            else if (isupper(c)) {
+                alphabetNum[i] = c - 'A';
                 cout << " " << text[i];
             }
         }
@@ -91,4 +114,9 @@ jmp_buf Utils::resumeHere;
         for (int value : numArray)
             cout << " " << value;
         cout << endl;
+    }
+
+    char Utils::numberToLetter(int value)
+    {
+        return static_cast<char>((value % 26) + 'A');
     }
