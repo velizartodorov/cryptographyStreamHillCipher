@@ -7,12 +7,12 @@
 // Test for basic Hill cipher encoding
 TEST(HillCipher_BasicEncoding) {
     HillCipher cipher;
-    char plainText[] = "hello";
+    char plainText[7] = "hello"; // extra byte: odd-length input gets 'x'-padded in place
     int matrixKey[25][25] = {{3, 3}, {2, 5}}; // 2x2 key matrix
-    
+
     // Test encoding
     cipher.encode(plainText, matrixKey);
-    
+
     // Verify that the function completes without crashing
     ASSERT_TRUE(true); // Basic functionality test
 }
@@ -30,7 +30,7 @@ TEST(HillCipher_EvenLengthText) {
 // Test for Hill cipher with odd length text (should add padding)
 TEST(HillCipher_OddLengthText) {
     HillCipher cipher;
-    char plainText[] = "abc"; // Odd length
+    char plainText[5] = "abc"; // Odd length; extra byte for in-place 'x' padding
     int matrixKey[25][25] = {{2, 1}, {1, 3}};
     
     cipher.encode(plainText, matrixKey);
@@ -40,9 +40,9 @@ TEST(HillCipher_OddLengthText) {
 // Test for Hill cipher with single character
 TEST(HillCipher_SingleCharacter) {
     HillCipher cipher;
-    char plainText[] = "a";
+    char plainText[3] = "a"; // extra byte for in-place 'x' padding
     int matrixKey[25][25] = {{1, 0}, {0, 1}}; // Identity matrix
-    
+
     cipher.encode(plainText, matrixKey);
     ASSERT_TRUE(true);
 }
@@ -60,7 +60,7 @@ TEST(HillCipher_IdentityMatrix) {
 // Test for Hill cipher with different matrix values
 TEST(HillCipher_DifferentMatrixValues) {
     HillCipher cipher;
-    char plainText[] = "hello";
+    char plainText[7] = "hello"; // extra byte for in-place 'x' padding
     int matrixKey[25][25] = {{5, 7}, {2, 3}};
     
     cipher.encode(plainText, matrixKey);
@@ -70,7 +70,7 @@ TEST(HillCipher_DifferentMatrixValues) {
 // Test for Hill cipher with uppercase text
 TEST(HillCipher_UppercaseText) {
     HillCipher cipher;
-    char plainText[] = "HELLO";
+    char plainText[7] = "HELLO"; // extra byte for in-place 'x' padding
     int matrixKey[25][25] = {{3, 3}, {2, 5}};
     
     cipher.encode(plainText, matrixKey);
@@ -80,7 +80,7 @@ TEST(HillCipher_UppercaseText) {
 // Test for Hill cipher with mixed case text
 TEST(HillCipher_MixedCaseText) {
     HillCipher cipher;
-    char plainText[] = "HeLlO";
+    char plainText[7] = "HeLlO"; // extra byte for in-place 'x' padding
     int matrixKey[25][25] = {{1, 1}, {1, 2}};
     
     cipher.encode(plainText, matrixKey);
