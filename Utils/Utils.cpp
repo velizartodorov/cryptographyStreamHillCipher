@@ -1,5 +1,19 @@
 #include "Utils.h"
 #include <limits>
+#include <stdexcept>
+
+namespace {
+    // Recovers from a failed extraction by discarding the bad token so the
+    // next read can try again. Throws instead when the stream is genuinely
+    // exhausted (EOF) — retrying forever cannot produce more input.
+    void recoverOrThrow() {
+        if (cin.eof()) {
+            throw runtime_error("No more input available on stdin");
+        }
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+}
 
     void Utils::validateInput(string& charKey, string& plainText, Matrix& matrixKey) {
         system("color F0");
@@ -10,6 +24,9 @@
         do {
             cout << endl << " Enter plain text: ";
             cin >> plainText;
+            if (cin.fail()) {
+                recoverOrThrow();
+            }
             valid = isLowercaseOnly(plainText);
             if (!valid) {
                 system("CLS");
@@ -20,6 +37,9 @@
         do {
             cout << endl << " Enter stream key: ";
             cin >> charKey;
+            if (cin.fail()) {
+                recoverOrThrow();
+            }
             valid = isLowercaseOnly(charKey);
             if (!valid) {
                 system("CLS");
@@ -32,8 +52,7 @@
             cout << endl << " Enter Hill cipher matrix size (N for an N x N key matrix): ";
             cin >> n;
             if (cin.fail()) {
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                recoverOrThrow();
                 n = 0;
             }
             if (n <= 0) {
@@ -53,8 +72,7 @@
                     cout << endl << " Value [" << i + 1 << "," << j + 1 << "] (0-25): ";
                     cin >> value;
                     if (cin.fail()) {
-                        cin.clear();
-                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                        recoverOrThrow();
                         value = -1;
                     }
                     if (value < 0 || value > 25) {
