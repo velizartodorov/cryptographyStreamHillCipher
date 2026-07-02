@@ -6,10 +6,18 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
-    
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
   # C++ dependencies (if using vcpkg or similar)
   - package-ecosystem: "vcpkg"
     directory: "/"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 3
+    groups:
+      vcpkg:
+        patterns:
+          - "*"
