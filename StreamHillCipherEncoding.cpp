@@ -22,9 +22,9 @@ int main()
 	catch (const exception& e)
 	{
 		cout << endl << " Error: " << e.what() << endl;
-		system("pause");
+		Utils::pauseConsole();
 		return 1;
 	}
 
-	system("pause"); // .monitor pause
+	Utils::pauseConsole();
 }

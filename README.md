@@ -20,7 +20,8 @@ The combination provides enhanced security through multiple layers of encryption
 ### Core Components
 
 - **`StreamCipher`**: Implements stream cipher encryption with key cycling
-- **`HillCipher`**: Implements Hill cipher encryption using 2x2 matrices
+- **`HillCipher`**: Implements Hill cipher encryption using an N x N key matrix
+- **`Matrix`**: Small matrix value type used for the Hill cipher key and intermediate results
 - **`Utils`**: Utility functions for input validation, display, and matrix operations
 - **`TestFramework`**: Custom testing framework with comprehensive assertions
 
@@ -48,11 +49,20 @@ cryptographyStreamHillCipher/
 
 ## 🚀 Quick Start
 
+The fastest way to build and run without installing a compiler locally is
+Docker (see [Docker](#-docker) below). The sections below cover building
+natively on Windows (MSVC) or any platform with CMake and a C++17 compiler.
+
 ### Prerequisites
 
-- **Windows 10/11** (primary platform)
+**Windows (MSVC):**
+- **Windows 10/11**
 - **Visual Studio 2019/2022** with C++ development tools
 - **MSBuild** (included with Visual Studio)
+
+**Any platform (CMake):**
+- A C++17 compiler (g++, clang, or MSVC)
+- **CMake** 3.10+
 
 ### Building
 
@@ -61,7 +71,7 @@ cryptographyStreamHillCipher/
 2. Select configuration (Debug/Release) and platform (x64)
 3. Build → Build Solution (Ctrl+Shift+B)
 
-#### Option 2: Command Line
+#### Option 2: Command Line (MSVC)
 ```bash
 # Build main project
 msbuild StreamHillCipherEncoding.vcxproj /p:Configuration=Debug /p:Platform=x64
@@ -70,20 +80,53 @@ msbuild StreamHillCipherEncoding.vcxproj /p:Configuration=Debug /p:Platform=x64
 msbuild TestProject.vcxproj /p:Configuration=Debug /p:Platform=x64
 ```
 
+#### Option 3: CMake (Windows, Linux, macOS)
+```bash
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+```
+
 ### Running
 
 #### Main Application
 ```bash
+# MSVC build
 x64\Debug\StreamHillCipherEncoding.exe
+
+# CMake build
+./build/StreamHillCipherEncoding
 ```
 
 #### Test Suite
 ```bash
-# Using batch file
+# Using batch file (MSVC)
 run_tests.bat
 
-# Direct execution
+# Direct execution (MSVC)
 x64\Debug\TestProject.exe
+
+# CMake build
+./build/TestProject
+```
+
+## 🐳 Docker
+
+Build and run without installing a compiler locally:
+
+```bash
+docker build -t stream-hill-cipher .
+docker run -it stream-hill-cipher
+```
+
+The image build compiles the project with g++/CMake in a throwaway build
+stage and runs the full test suite as part of the build — the image only
+produces successfully if all tests pass. The final image just contains the
+two compiled binaries plus the C++ runtime, not the compiler toolchain.
+
+To run the test suite directly instead of the interactive app:
+
+```bash
+docker run stream-hill-cipher TestProject
 ```
 
 ## 🧪 Testing

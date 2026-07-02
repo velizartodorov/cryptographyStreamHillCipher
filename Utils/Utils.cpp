@@ -1,4 +1,5 @@
 #include "Utils.h"
+#include <cstdlib>
 #include <limits>
 #include <stdexcept>
 
@@ -26,7 +27,7 @@ namespace {
             }
             valid = Utils::isLowercaseOnly(text);
             if (!valid) {
-                system("CLS");
+                Utils::clearScreen();
                 cout << endl << " Enter text: (a-z)!" << endl;
             }
         } while (!valid);
@@ -68,7 +69,7 @@ namespace {
 }
 
     void Utils::validateInput(string& charKey, string& plainText, Matrix& matrixKey) {
-        system("color F0");
+        setConsoleColors();
 
         cout << endl << " --- Stream and Hill ciphers --- " << endl;
 
@@ -134,4 +135,33 @@ namespace {
     char Utils::numberToLetter(int value)
     {
         return static_cast<char>((value % 26) + 'A');
+    }
+
+    void Utils::setConsoleColors()
+    {
+#ifdef _WIN32
+        system("color F0");
+#endif
+        // No portable equivalent for non-Windows terminals; left as a no-op
+        // there so output stays plain rather than relying on ANSI support.
+    }
+
+    void Utils::clearScreen()
+    {
+#ifdef _WIN32
+        system("cls");
+#else
+        system("clear");
+#endif
+    }
+
+    void Utils::pauseConsole()
+    {
+#ifdef _WIN32
+        system("pause");
+#else
+        cout << "Press Enter to continue . . . ";
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.get();
+#endif
     }

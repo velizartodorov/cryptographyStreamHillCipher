@@ -1,0 +1,11 @@
+.git
+.github
+.vs
+x64
+build
+*.vcxproj
+*.vcxproj.*
+*.sln
+*.log
+Code Review Findings.md
+Remediation plan.md

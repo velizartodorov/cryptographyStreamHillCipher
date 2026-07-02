@@ -1,0 +1,22 @@
+name: Docker Build
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v7
+
+    - name: Build Docker image
+      run: docker build -t stream-hill-cipher .
+
+    - name: Smoke test the container
+      run: |
+        printf "hello\nkey\n2\n3\n3\n2\n5\n" | docker run -i stream-hill-cipher

@@ -4,7 +4,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <conio.h>
 #include "Matrix.h"
 
 using namespace std;
@@ -18,4 +17,9 @@ public:
     static void displayText(const string& text, vector<int>& alphabetNum);
     static void displayNumber(const vector<int>& numArray);
     static char numberToLetter(int value); // value must be non-negative
+
+    // Platform-abstracted console control (Windows: cmd built-ins; else: POSIX equivalents)
+    static void setConsoleColors();
+    static void clearScreen();
+    static void pauseConsole();
 };
