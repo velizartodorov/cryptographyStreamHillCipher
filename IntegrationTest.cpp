@@ -14,83 +14,60 @@ static void runPipeline(char* plainText, char* cipherText, char* key, int matrix
     hillCipher.encode(cipherText, matrixKey);
 }
 
-// Test for complete encryption pipeline: Stream Cipher -> Hill Cipher
-TEST(Integration_StreamThenHillCipher) {
-    char plainText[] = "hello";
-    char streamCipherText[50];
-    char key[] = "key";
-    int matrixKey[25][25] = {{3, 3}, {2, 5}};
+struct PipelineCase {
+    const char* name;
+    const char* plainText;
+    const char* key;
+    int a, b, c, d; // 2x2 key matrix: {{a, b}, {c, d}}
+};
 
-    runPipeline(plainText, streamCipherText, key, matrixKey);
+static const PipelineCase pipelineCases[] = {
+    {"StreamThenHillCipher", "hello", "key", 3, 3, 2, 5},
 
-    // Verify that both operations complete successfully
-    ASSERT_TRUE(strlen(streamCipherText) > 0);
-    ASSERT_TRUE(true); // Hill cipher completed without crashing
-}
+    // different text lengths
+    {"ShortText", "hi", "abc", 1, 2, 3, 4},
+    {"MediumText", "hello world", "abc", 1, 2, 3, 4},
+    {"LongText", "this is a very long text for testing", "abc", 1, 2, 3, 4},
 
-// Test for encryption pipeline with different text lengths
-TEST(Integration_DifferentTextLengths) {
-    char cipherText[50];
-    char key[] = "abc";
-    int matrixKey[25][25] = {{1, 2}, {3, 4}};
+    // different stream cipher keys
+    {"SingleCharKey", "test", "a", 2, 1, 1, 3},
+    {"ShortKey", "test", "key", 2, 1, 1, 3},
+    {"LongKey", "test", "verylongkey", 2, 1, 1, 3},
 
-    // Test with short text
-    char shortText[] = "hi";
-    runPipeline(shortText, cipherText, key, matrixKey);
-    ASSERT_TRUE(true);
+    // different Hill cipher matrix keys
+    {"IdentityMatrix", "hello", "key", 1, 0, 0, 1},
+    {"Matrix2", "hello", "key", 5, 7, 2, 3},
+    {"Matrix3", "hello", "key", 1, 1, 1, 2},
 
-    // Test with medium text
-    char mediumText[] = "hello world";
-    runPipeline(mediumText, cipherText, key, matrixKey);
-    ASSERT_TRUE(true);
+    // edge cases: very short plain text, including odd length for Hill cipher
+    {"SingleChar", "a", "key", 1, 1, 1, 1},
+    {"TwoChars", "ab", "key", 1, 1, 1, 1},
+    {"ThreeChars", "abc", "key", 1, 1, 1, 1},
 
-    // Test with long text
-    char longText[] = "this is a very long text for testing";
-    runPipeline(longText, cipherText, key, matrixKey);
-    ASSERT_TRUE(true);
-}
+    // alphabet boundary cases
+    {"FirstLetter", "a", "key", 2, 3, 1, 2},
+    {"LastLetter", "z", "key", 2, 3, 1, 2},
+    {"AllLetters", "abcdefghijklmnopqrstuvwxyz", "key", 2, 3, 1, 2},
+};
 
-// Test for encryption pipeline with different keys
-TEST(Integration_DifferentKeys) {
-    char plainText[] = "test";
-    char cipherText[50];
-    int matrixKey[25][25] = {{2, 1}, {1, 3}};
+// Test for complete encryption pipeline (Stream Cipher -> Hill Cipher) across
+// varying text lengths, keys, and matrix keys. Every case should complete
+// without crashing and produce non-empty cipher text.
+TEST(Integration_AllPipelines) {
+    for (const auto& c : pipelineCases) {
+        char plainText[64];
+        char key[64];
+        char cipherText[50];
+        strcpy_s(plainText, sizeof(plainText), c.plainText);
+        strcpy_s(key, sizeof(key), c.key);
+        int matrixKey[25][25] = {{c.a, c.b}, {c.c, c.d}};
 
-    // Test with different stream cipher keys
-    char key1[] = "a";
-    char key2[] = "key";
-    char key3[] = "verylongkey";
+        runPipeline(plainText, cipherText, key, matrixKey);
 
-    runPipeline(plainText, cipherText, key1, matrixKey);
-    ASSERT_TRUE(true);
-
-    runPipeline(plainText, cipherText, key2, matrixKey);
-    ASSERT_TRUE(true);
-
-    runPipeline(plainText, cipherText, key3, matrixKey);
-    ASSERT_TRUE(true);
-}
-
-// Test for encryption pipeline with different matrix keys
-TEST(Integration_DifferentMatrixKeys) {
-    char plainText[] = "hello";
-    char cipherText[50];
-    char key[] = "key";
-
-    // Test with identity matrix
-    int identityMatrix[25][25] = {{1, 0}, {0, 1}};
-    runPipeline(plainText, cipherText, key, identityMatrix);
-    ASSERT_TRUE(true);
-
-    // Test with different matrix
-    int matrix2[25][25] = {{5, 7}, {2, 3}};
-    runPipeline(plainText, cipherText, key, matrix2);
-    ASSERT_TRUE(true);
-
-    // Test with another matrix
-    int matrix3[25][25] = {{1, 1}, {1, 2}};
-    runPipeline(plainText, cipherText, key, matrix3);
-    ASSERT_TRUE(true);
+        if (strlen(cipherText) == 0) {
+            throw runtime_error(string("Case '") + c.name + "' produced empty cipher text");
+        }
+    }
 }
 
 // Test for encryption pipeline consistency
@@ -109,46 +86,3 @@ TEST(Integration_EncryptionConsistency) {
     ASSERT_TRUE(true);
 }
 
-// Test for encryption pipeline with edge cases
-TEST(Integration_EdgeCases) {
-    char key[] = "key";
-    int matrixKey[25][25] = {{1, 1}, {1, 1}};
-    char cipherText[50];
-
-    // Test with single character
-    char singleChar[] = "a";
-    runPipeline(singleChar, cipherText, key, matrixKey);
-    ASSERT_TRUE(true);
-
-    // Test with two characters
-    char twoChars[] = "ab";
-    runPipeline(twoChars, cipherText, key, matrixKey);
-    ASSERT_TRUE(true);
-
-    // Test with three characters (odd length for Hill cipher)
-    char threeChars[] = "abc";
-    runPipeline(threeChars, cipherText, key, matrixKey);
-    ASSERT_TRUE(true);
-}
-
-// Test for encryption pipeline with alphabet boundary cases
-TEST(Integration_AlphabetBoundaryCases) {
-    char key[] = "key";
-    int matrixKey[25][25] = {{2, 3}, {1, 2}};
-    char cipherText[50];
-
-    // Test with 'a' (first letter)
-    char firstLetter[] = "a";
-    runPipeline(firstLetter, cipherText, key, matrixKey);
-    ASSERT_TRUE(true);
-
-    // Test with 'z' (last letter)
-    char lastLetter[] = "z";
-    runPipeline(lastLetter, cipherText, key, matrixKey);
-    ASSERT_TRUE(true);
-
-    // Test with all letters
-    char allLetters[] = "abcdefghijklmnopqrstuvwxyz";
-    runPipeline(allLetters, cipherText, key, matrixKey);
-    ASSERT_TRUE(true);
-}

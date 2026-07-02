@@ -15,63 +15,40 @@ static bool isAllLowercase(const char* text) {
     return true;
 }
 
-// Test for displayText function with lowercase input
-TEST(Utils_DisplayTextLowercase) {
-    char text[] = "hello";
-    int alphabetNum[50];
-    
-    Utils::displayText(text, alphabetNum);
-    
-    // Verify that alphabet numbers are correctly calculated
-    ASSERT_EQUAL(7, alphabetNum[0]);  // h -> 7
-    ASSERT_EQUAL(4, alphabetNum[1]);  // e -> 4
-    ASSERT_EQUAL(11, alphabetNum[2]); // l -> 11
-    ASSERT_EQUAL(11, alphabetNum[3]); // l -> 11
-    ASSERT_EQUAL(14, alphabetNum[4]); // o -> 14
-}
+struct DisplayTextCase {
+    const char* name;
+    const char* text;
+    int length; // 0 = process the full string
+};
 
-// Test for displayText function with uppercase input
-TEST(Utils_DisplayTextUppercase) {
-    char text[] = "HELLO";
-    int alphabetNum[50];
-    
-    Utils::displayText(text, alphabetNum);
-    
-    // Verify that alphabet numbers are correctly calculated
-    ASSERT_EQUAL(7, alphabetNum[0]);  // H -> 7
-    ASSERT_EQUAL(4, alphabetNum[1]);  // E -> 4
-    ASSERT_EQUAL(11, alphabetNum[2]); // L -> 11
-    ASSERT_EQUAL(11, alphabetNum[3]); // L -> 11
-    ASSERT_EQUAL(14, alphabetNum[4]); // O -> 14
-}
+static const DisplayTextCase displayTextCases[] = {
+    {"Lowercase", "hello", 0},
+    {"Uppercase", "HELLO", 0},
+    {"MixedCase", "HeLlO", 0},
+    {"WithLength", "hello", 3}, // only first 3 characters should be processed
+};
 
-// Test for displayText function with mixed case input
-TEST(Utils_DisplayTextMixedCase) {
-    char text[] = "HeLlO";
-    int alphabetNum[50];
-    
-    Utils::displayText(text, alphabetNum);
-    
-    // Verify that alphabet numbers are correctly calculated
-    ASSERT_EQUAL(7, alphabetNum[0]);  // H -> 7
-    ASSERT_EQUAL(4, alphabetNum[1]);  // e -> 4
-    ASSERT_EQUAL(11, alphabetNum[2]); // L -> 11
-    ASSERT_EQUAL(11, alphabetNum[3]); // l -> 11
-    ASSERT_EQUAL(14, alphabetNum[4]); // O -> 14
-}
+// h,e,l,l,o -> 7,4,11,11,14 regardless of case
+static const int expectedAlphabetNums[] = {7, 4, 11, 11, 14};
 
-// Test for displayText function with specified length
-TEST(Utils_DisplayTextWithLength) {
-    char text[] = "hello";
-    int alphabetNum[50];
-    int length = 3; // Only process first 3 characters
-    
-    Utils::displayText(text, alphabetNum, length);
-    
-    // Verify that only first 3 characters are processed
-    ASSERT_EQUAL(7, alphabetNum[0]);  // h -> 7
-    ASSERT_EQUAL(4, alphabetNum[1]);  // e -> 4
-    ASSERT_EQUAL(11, alphabetNum[2]); // l -> 11
+// Test for displayText function across case variations and the length-limited overload
+TEST(Utils_DisplayText_AllCases) {
+    for (const auto& c : displayTextCases) {
+        char text[16];
+        strcpy_s(text, sizeof(text), c.text);
+        int alphabetNum[50];
+        int checkCount = c.length > 0 ? c.length : 5;
+
+        if (c.length > 0) {
+            Utils::displayText(text, alphabetNum, c.length);
+        } else {
+            Utils::displayText(text, alphabetNum);
+        }
+
+        for (int i = 0; i < checkCount; i++) {
+            ASSERT_EQUAL(expectedAlphabetNums[i], alphabetNum[i]);
+        }
+    }
 }
 
 // Test for displayNumber function
@@ -93,29 +70,29 @@ TEST(Utils_DisplayMatrix) {
     ASSERT_TRUE(true);
 }
 
-// Test for inputCheck function with valid lowercase input
+struct LowercaseCheckCase {
+    const char* name;
+    const char* text;
+    bool expected;
+};
+
+static const LowercaseCheckCase lowercaseCheckCases[] = {
+    {"ValidLowercase", "hello", true},
+    {"InvalidNumbers", "hello123", false},
+    {"Uppercase", "HELLO", false}, // Uppercase should be invalid according to the logic
+    {"SpecialCharacters", "hello!@#", false},
+    {"EmptyString", "", true}, // Empty string should be valid (no invalid characters)
+};
+
+// Test for inputCheck function's lowercase-only rule across representative inputs.
 // This function uses longjmp which makes it difficult to test directly,
 // so we test the lowercase-check logic indirectly via isAllLowercase.
-TEST(Utils_InputCheckValidLowercase) {
-    ASSERT_TRUE(isAllLowercase("hello"));
-}
-
-// Test for inputCheck function with invalid input (numbers)
-TEST(Utils_InputCheckInvalidNumbers) {
-    ASSERT_FALSE(isAllLowercase("hello123"));
-}
-
-// Test for inputCheck function with uppercase input
-TEST(Utils_InputCheckUppercase) {
-    ASSERT_FALSE(isAllLowercase("HELLO")); // Uppercase should be invalid according to the logic
-}
-
-// Test for inputCheck function with special characters
-TEST(Utils_InputCheckSpecialCharacters) {
-    ASSERT_FALSE(isAllLowercase("hello!@#"));
-}
-
-// Test for inputCheck function with empty string
-TEST(Utils_InputCheckEmptyString) {
-    ASSERT_TRUE(isAllLowercase("")); // Empty string should be valid (no invalid characters)
+TEST(Utils_InputCheck_AllCases) {
+    for (const auto& c : lowercaseCheckCases) {
+        bool result = isAllLowercase(c.text);
+        if (result != c.expected) {
+            throw runtime_error(string("Case '") + c.name + "': expected " +
+                (c.expected ? "true" : "false") + " but got " + (result ? "true" : "false"));
+        }
+    }
 }
