@@ -50,37 +50,16 @@ cryptographyStreamHillCipher/
 ## 🚀 Quick Start
 
 The fastest way to build and run without installing a compiler locally is
-Docker (see [Docker](#-docker) below). The sections below cover building
-natively on Windows (MSVC) or any platform with CMake and a C++17 compiler.
+Docker (see [Docker](#-docker) below). The project also builds natively on
+any platform (Windows, Linux, macOS) via CMake.
 
 ### Prerequisites
 
-**Windows (MSVC):**
-- **Windows 10/11**
-- **Visual Studio 2019/2022** with C++ development tools
-- **MSBuild** (included with Visual Studio)
-
-**Any platform (CMake):**
 - A C++17 compiler (g++, clang, or MSVC)
 - **CMake** 3.10+
 
 ### Building
 
-#### Option 1: Visual Studio
-1. Open `StreamHillCipherEncoding.vcxproj`
-2. Select configuration (Debug/Release) and platform (x64)
-3. Build → Build Solution (Ctrl+Shift+B)
-
-#### Option 2: Command Line (MSVC)
-```bash
-# Build main project
-msbuild StreamHillCipherEncoding.vcxproj /p:Configuration=Debug /p:Platform=x64
-
-# Build test project
-msbuild TestProject.vcxproj /p:Configuration=Debug /p:Platform=x64
-```
-
-#### Option 3: CMake (Windows, Linux, macOS)
 ```bash
 cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
@@ -90,22 +69,11 @@ cmake --build build
 
 #### Main Application
 ```bash
-# MSVC build
-x64\Debug\StreamHillCipherEncoding.exe
-
-# CMake build
 ./build/StreamHillCipherEncoding
 ```
 
 #### Test Suite
 ```bash
-# Using batch file (MSVC)
-run_tests.bat
-
-# Direct execution (MSVC)
-x64\Debug\TestProject.exe
-
-# CMake build
 ./build/TestProject
 ```
 
@@ -143,12 +111,9 @@ The project includes a comprehensive test suite with **31+ tests** covering:
 ### Running Tests
 
 ```bash
-# Quick test run
-run_tests.bat
-
-# Manual test execution
-msbuild TestProject.vcxproj /p:Configuration=Debug /p:Platform=x64
-x64\Debug\TestProject.exe
+cmake -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build --target TestProject
+./build/TestProject
 ```
 
 ### Test Coverage
@@ -168,10 +133,11 @@ See [README_TESTS.md](README_TESTS.md) for detailed testing documentation.
 ### GitHub Actions Workflows
 
 - **🔄 CI Tests**: Quick validation on every commit
-- **🏗️ Build and Test**: Comprehensive build matrix testing
+- **🏗️ Build and Test**: Debug/Release build matrix testing
 - **🔍 Code Quality**: Best practices and warning enforcement
 - **🔒 Security Scan**: Vulnerability detection and CodeQL analysis
 - **🚀 Release Build**: Automated release packaging
+- **🐳 Docker Build**: Builds and smoke-tests the container image
 
 ### Workflow Triggers
 
@@ -213,7 +179,7 @@ hillCipher.encode(cipherText, hillMatrix);
 - **Build Time**: ~30 seconds (Debug), ~45 seconds (Release)
 - **Test Execution**: ~5 seconds for full test suite
 - **Memory Usage**: Minimal (stack-based implementation)
-- **Platform Support**: Windows x64 (primary), x86 (compatible)
+- **Platform Support**: Linux, Windows, macOS (via CMake/Docker)
 
 ## 🔒 Security Considerations
 

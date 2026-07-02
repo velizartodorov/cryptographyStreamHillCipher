@@ -2,7 +2,7 @@ name: Workflow Status
 
 on:
   workflow_run:
-    workflows: ["CI Tests", "Build and Test", "Code Quality", "Security Scan"]
+    workflows: ["CI Tests", "Build and Test", "Code Quality", "Security Scan", "Docker Build"]
     types: [completed]
 
 jobs:

@@ -8,66 +8,56 @@ on:
 
 jobs:
   code-quality:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v7
-      
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v3
 
     - name: Build with warnings as errors
       run: |
-        msbuild TestProject.vcxproj /p:Configuration=Debug /p:Platform=x64 /verbosity:normal /p:TreatWarningsAsErrors=true /p:WarningLevel=4
-      shell: cmd
+        cmake -B build-strict -DCMAKE_BUILD_TYPE=Debug \
+          -DCMAKE_CXX_FLAGS="-Wall -Wextra -Werror"
+        cmake --build build-strict --target TestProject --parallel
       continue-on-error: true
-      
+
     - name: Check for common C++ issues
       run: |
         echo "Checking for common C++ code issues..."
-        
+
         echo "Checking for TODO comments:"
-        findstr /s /r /i "todo\|fixme\|hack" *.cpp *.h || echo "No TODO comments found"
+        grep -rEi "todo|fixme|hack" --include="*.cpp" --include="*.h" . || echo "No TODO comments found"
 
         echo "Checking for debug code:"
-        findstr /s /r /i "printf\|cout.*debug\|cerr.*debug" *.cpp *.h || echo "No debug output found"
+        grep -rEi "printf|cout.*debug|cerr.*debug" --include="*.cpp" --include="*.h" . || echo "No debug output found"
 
         echo "Checking for hardcoded paths:"
-        findstr /s /r /i "c:\\\|d:\\\|e:\\\|f:\\\|g:\\\|h:\\\|i:\\\|j:\\\|k:\\\|l:\\\|m:\\\|n:\\\|o:\\\|p:\\\|q:\\\|r:\\\|s:\\\|t:\\\|u:\\\|v:\\\|w:\\\|x:\\\|y:\\\|z:\\" *.cpp *.h || echo "No hardcoded paths found"
-        
+        grep -rEi "[a-z]:\\\\" --include="*.cpp" --include="*.h" . || echo "No hardcoded paths found"
+
         echo "Code quality check completed"
-      shell: cmd
       continue-on-error: true
-      
+
     - name: Validate project structure
       run: |
         echo "Validating project structure..."
-        
-        if not exist "TestProject.vcxproj" (
-          echo "ERROR: TestProject.vcxproj not found"
-          exit /b 1
-        )
-        
-        if not exist "StreamHillCipherEncoding.vcxproj" (
-          echo "ERROR: StreamHillCipherEncoding.vcxproj not found"
-          exit /b 1
-        )
-        
-        if not exist "tests\TestFramework.h" (
-          echo "ERROR: tests\TestFramework.h not found"
-          exit /b 1
-        )
-        
+
+        if [ ! -f "CMakeLists.txt" ]; then
+          echo "ERROR: CMakeLists.txt not found"
+          exit 1
+        fi
+
+        if [ ! -f "tests/TestFramework.h" ]; then
+          echo "ERROR: tests/TestFramework.h not found"
+          exit 1
+        fi
+
         echo "Project structure validation passed"
-      shell: cmd
-      
+
     - name: Check file encoding
       run: |
         echo "Checking file encodings..."
-        for /r %%f in (*.cpp *.h) do (
-          echo Checking %%f
-          file %%f 2>nul || echo "File command not available, skipping encoding check"
-        )
-      shell: cmd
+        find . -name "*.cpp" -o -name "*.h" | while read -r f; do
+          echo "Checking $f"
+          file "$f"
+        done
       continue-on-error: true

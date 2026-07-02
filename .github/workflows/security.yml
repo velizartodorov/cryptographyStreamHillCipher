@@ -10,52 +10,47 @@ on:
 
 jobs:
   security-scan:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v7
-      
+
     - name: Run CodeQL Analysis
       uses: github/codeql-action/init@v4
       with:
         languages: cpp
         queries: security-extended,security-and-quality
-        
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v3
 
     - name: Build for CodeQL
       run: |
-        msbuild TestProject.vcxproj /p:Configuration=Debug /p:Platform=x64 /verbosity:minimal
-      shell: cmd
-      
+        cmake -B build -DCMAKE_BUILD_TYPE=Debug
+        cmake --build build --target TestProject --parallel
+
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4
-      
+
     - name: Check for security anti-patterns
       run: |
         echo "Checking for security anti-patterns..."
-        
+
         echo "Checking for unsafe string functions:"
-        findstr /s /r /i "strcpy\|strcat\|sprintf\|gets\|scanf" *.cpp *.h || echo "No unsafe string functions found"
+        grep -rEi "strcpy|strcat|sprintf|gets|scanf" --include="*.cpp" --include="*.h" . || echo "No unsafe string functions found"
 
         echo "Checking for buffer overflow risks:"
-        findstr /s /r /i "char.*\[.*\]" *.cpp *.h || echo "No fixed-size buffers found"
+        grep -rE "char.*\[.*\]" --include="*.cpp" --include="*.h" . || echo "No fixed-size buffers found"
 
         echo "Checking for memory management issues:"
-        findstr /s /r /i "malloc\|free\|new\|delete" *.cpp *.h || echo "No manual memory management found"
+        grep -rEi "malloc|free|new|delete" --include="*.cpp" --include="*.h" . || echo "No manual memory management found"
 
         echo "Checking for potential integer overflow:"
-        findstr /s /r /i "int.*\*.*int\|int.*\+.*int" *.cpp *.h || echo "No potential integer overflow found"
-        
+        grep -rE "int.*\*.*int|int.*\+.*int" --include="*.cpp" --include="*.h" . || echo "No potential integer overflow found"
+
         echo "Security scan completed"
-      shell: cmd
       continue-on-error: true
-      
+
     - name: Check for hardcoded secrets
       run: |
         echo "Checking for potential hardcoded secrets..."
-        findstr /s /r /i "password\|secret\|key.*=.*[a-zA-Z0-9]\{8,\}\|token.*=.*[a-zA-Z0-9]\{8,\}" *.cpp *.h || echo "No potential secrets found"
-      shell: cmd
+        grep -rEi "password|secret|key.*=.*[a-zA-Z0-9]{8,}|token.*=.*[a-zA-Z0-9]{8,}" --include="*.cpp" --include="*.h" . || echo "No potential secrets found"
       continue-on-error: true

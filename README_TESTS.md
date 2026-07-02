@@ -66,24 +66,20 @@ The test suite includes:
 
 ## Building and Running Tests
 
-### Option 1: Using the Main Project
-1. Build the main project (`StreamHillCipherEncoding.vcxproj`)
-2. The test files are included in the main project
-3. Run the executable to see both the main program and tests
-
-### Option 2: Using the Test Project (Recommended)
-1. Open `TestProject.vcxproj` in Visual Studio
-2. Build the project (Debug or Release configuration)
-3. Run the generated executable to execute all tests
-
-### Option 3: Command Line
+### Option 1: CMake
 ```bash
-# Build the test project
-msbuild TestProject.vcxproj /p:Configuration=Debug /p:Platform=x64
-
-# Run the tests
-./x64/Debug/TestProject.exe
+cmake -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build --target TestProject
+./build/TestProject
 ```
+
+### Option 2: Docker
+```bash
+docker build -t stream-hill-cipher .
+docker run stream-hill-cipher TestProject
+```
+The test suite also runs automatically as part of the Docker image build
+itself — the image only produces successfully if all tests pass.
 
 ## Test Output
 
@@ -194,19 +190,21 @@ The project includes comprehensive GitHub Actions workflows for automated testin
 
 ### Local CI Simulation
 
-To simulate CI locally, use the provided batch file:
-```bash
-run_tests.bat
-```
-
-Or manually:
+To simulate CI locally:
 ```bash
 # Build and test
-msbuild TestProject.vcxproj /p:Configuration=Debug /p:Platform=x64
-x64\Debug\TestProject.exe
+cmake -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build --target TestProject
+./build/TestProject
 
 # Build with warnings as errors (CI simulation)
-msbuild TestProject.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:TreatWarningsAsErrors=true
+cmake -B build-strict -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-Wall -Wextra -Werror"
+cmake --build build-strict --target TestProject
+```
+
+Or simply run it in Docker, which builds and runs the tests exactly the way CI does:
+```bash
+docker build -t stream-hill-cipher .
 ```
 
 ### Workflow Status

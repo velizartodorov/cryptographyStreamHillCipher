@@ -8,51 +8,34 @@ on:
 
 jobs:
   test:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v7
-      
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v3
 
-    - name: Restore NuGet packages (if any)
-      run: nuget restore
-      continue-on-error: true
-      
-    - name: Build Test Project
-      run: |
-        msbuild TestProject.vcxproj /p:Configuration=Debug /p:Platform=x64 /verbosity:minimal
-      shell: cmd
-      
+    - name: Configure
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Debug
+
+    - name: Build
+      run: cmake --build build --parallel
+
     - name: Run Tests
       run: |
-        if exist "x64\Debug\TestProject.exe" (
+        if [ -x "build/TestProject" ]; then
           echo "Running tests..."
-          x64\Debug\TestProject.exe
-          if %ERRORLEVEL% neq 0 (
-            echo "Tests failed with exit code %ERRORLEVEL%"
-            exit /b 1
-          )
-        ) else (
+          ./build/TestProject
+        else
           echo "Test executable not found!"
-          exit /b 1
-        )
-      shell: cmd
-      
-    - name: Build Main Project
-      run: |
-        msbuild StreamHillCipherEncoding.vcxproj /p:Configuration=Debug /p:Platform=x64 /verbosity:minimal
-      shell: cmd
-      continue-on-error: true
-      
+          exit 1
+        fi
+
     - name: Upload Test Results
       uses: actions/upload-artifact@v7
       if: always()
       with:
         name: test-results
         path: |
-          x64/Debug/
+          build/
           *.log
         retention-days: 7
