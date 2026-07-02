@@ -1,9 +1,9 @@
 # StreamHillCipherEncoding
 
-[![CI Tests](https://github.com/yourusername/StreamHillCipherEncoding/workflows/CI%20Tests/badge.svg)](https://github.com/yourusername/StreamHillCipherEncoding/actions/workflows/ci.yml)
-[![Build and Test](https://github.com/yourusername/StreamHillCipherEncoding/workflows/Build%20and%20Test/badge.svg)](https://github.com/yourusername/StreamHillCipherEncoding/actions/workflows/build-and-test.yml)
-[![Code Quality](https://github.com/yourusername/StreamHillCipherEncoding/workflows/Code%20Quality/badge.svg)](https://github.com/yourusername/StreamHillCipherEncoding/actions/workflows/code-quality.yml)
-[![Security Scan](https://github.com/yourusername/StreamHillCipherEncoding/workflows/Security%20Scan/badge.svg)](https://github.com/yourusername/StreamHillCipherEncoding/actions/workflows/security.yml)
+[![CI Tests](https://github.com/velizartodorov/cryptographyStreamHillCipher/actions/workflows/ci.yml/badge.svg)](https://github.com/velizartodorov/cryptographyStreamHillCipher/actions/workflows/ci.yml)
+[![Build and Test](https://github.com/velizartodorov/cryptographyStreamHillCipher/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/velizartodorov/cryptographyStreamHillCipher/actions/workflows/build-and-test.yml)
+[![Code Quality](https://github.com/velizartodorov/cryptographyStreamHillCipher/actions/workflows/code-quality.yml/badge.svg)](https://github.com/velizartodorov/cryptographyStreamHillCipher/actions/workflows/code-quality.yml)
+[![Security Scan](https://github.com/velizartodorov/cryptographyStreamHillCipher/actions/workflows/security.yml/badge.svg)](https://github.com/velizartodorov/cryptographyStreamHillCipher/actions/workflows/security.yml)
 
 A C++ implementation of combined Stream Cipher and Hill Cipher encryption algorithms with comprehensive testing and CI/CD integration.
 
