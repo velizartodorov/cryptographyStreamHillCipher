@@ -24,9 +24,6 @@ jobs:
             platform: x64
     
     runs-on: windows-latest
-    defaults:
-      run:
-        working-directory: StreamHillCipherEncoding
 
     steps:
     - name: Checkout repository
@@ -93,9 +90,9 @@ jobs:
       with:
         name: build-artifacts-${{ matrix.configuration }}-${{ matrix.platform }}
         path: |
-          StreamHillCipherEncoding/${{ matrix.platform }}/${{ matrix.configuration }}/
-          StreamHillCipherEncoding/*.log
-          StreamHillCipherEncoding/*.pdb
+          ${{ matrix.platform }}/${{ matrix.configuration }}/
+          *.log
+          *.pdb
         retention-days: 7
 
     - name: Upload test results
@@ -104,7 +101,7 @@ jobs:
       with:
         name: test-results-${{ matrix.configuration }}-${{ matrix.platform }}
         path: |
-          StreamHillCipherEncoding/${{ matrix.platform }}/${{ matrix.configuration }}/TestProject.exe
-          StreamHillCipherEncoding/test-output.log
+          ${{ matrix.platform }}/${{ matrix.configuration }}/TestProject.exe
+          test-output.log
         retention-days: 30
       continue-on-error: true

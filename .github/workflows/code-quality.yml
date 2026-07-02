@@ -9,9 +9,6 @@ on:
 jobs:
   code-quality:
     runs-on: windows-latest
-    defaults:
-      run:
-        working-directory: StreamHillCipherEncoding
 
     steps:
     - name: Checkout code

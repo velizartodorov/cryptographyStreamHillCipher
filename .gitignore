@@ -78,6 +78,3 @@ CMakeSettings.json
 *.nuget.props
 *.nuget.targets
 packages/
-
-# Ignore solution-specific build folder
-StreamHillCipherEncoding/x64/
