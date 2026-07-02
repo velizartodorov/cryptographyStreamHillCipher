@@ -13,6 +13,58 @@ namespace {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
+
+    // Prompts until a non-empty, lowercase-only string is entered.
+    string readLowercaseText(const string& prompt) {
+        string text;
+        bool valid;
+        do {
+            cout << endl << prompt;
+            cin >> text;
+            if (cin.fail()) {
+                recoverOrThrow();
+            }
+            valid = Utils::isLowercaseOnly(text);
+            if (!valid) {
+                system("CLS");
+                cout << endl << " Enter text: (a-z)!" << endl;
+            }
+        } while (!valid);
+        return text;
+    }
+
+    // Prompts until an integer within [minValue, maxValue] is entered.
+    int readBoundedInt(const string& prompt, int minValue, int maxValue, const string& errorMessage) {
+        int value;
+        do {
+            cout << endl << prompt;
+            cin >> value;
+            if (cin.fail()) {
+                recoverOrThrow();
+                value = minValue - 1;
+            }
+            if (value < minValue || value > maxValue) {
+                cout << endl << errorMessage << endl;
+            }
+        } while (value < minValue || value > maxValue);
+        return value;
+    }
+
+    // Prompts for every cell of an n x n Hill cipher key matrix.
+    Matrix readMatrixValues(int n) {
+        Matrix matrixKey(n, n);
+        cout << endl << " Enter Hill key (matrix [" << n << " x " << n << "]):" << endl;
+
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                string prompt = " Value [" + to_string(i + 1) + "," + to_string(j + 1) + "] (0-25): ";
+                matrixKey[i][j] = readBoundedInt(prompt, 0, 25, " Value must be between 0 and 25!");
+            }
+        }
+        return matrixKey;
+    }
 }
 
     void Utils::validateInput(string& charKey, string& plainText, Matrix& matrixKey) {
@@ -20,68 +72,13 @@ namespace {
 
         cout << endl << " --- Stream and Hill ciphers --- " << endl;
 
-        bool valid;
-        do {
-            cout << endl << " Enter plain text: ";
-            cin >> plainText;
-            if (cin.fail()) {
-                recoverOrThrow();
-            }
-            valid = isLowercaseOnly(plainText);
-            if (!valid) {
-                system("CLS");
-                cout << endl << " Enter text: (a-z)!" << endl;
-            }
-        } while (!valid);
+        plainText = readLowercaseText(" Enter plain text: ");
+        charKey = readLowercaseText(" Enter stream key: ");
 
-        do {
-            cout << endl << " Enter stream key: ";
-            cin >> charKey;
-            if (cin.fail()) {
-                recoverOrThrow();
-            }
-            valid = isLowercaseOnly(charKey);
-            if (!valid) {
-                system("CLS");
-                cout << endl << " Enter text: (a-z)!" << endl;
-            }
-        } while (!valid);
+        int n = readBoundedInt(" Enter Hill cipher matrix size (N for an N x N key matrix): ",
+            1, numeric_limits<int>::max(), " Matrix size must be a positive whole number!");
 
-        int n;
-        do {
-            cout << endl << " Enter Hill cipher matrix size (N for an N x N key matrix): ";
-            cin >> n;
-            if (cin.fail()) {
-                recoverOrThrow();
-                n = 0;
-            }
-            if (n <= 0) {
-                cout << endl << " Matrix size must be a positive whole number!" << endl;
-            }
-        } while (n <= 0);
-
-        matrixKey = Matrix(n, n);
-        cout << endl << " Enter Hill key (matrix [" << n << " x " << n << "]):" << endl;
-
-        for (int i = 0; i < n; i++)
-        {
-            for (int j = 0; j < n; j++)
-            {
-                int value;
-                do {
-                    cout << endl << " Value [" << i + 1 << "," << j + 1 << "] (0-25): ";
-                    cin >> value;
-                    if (cin.fail()) {
-                        recoverOrThrow();
-                        value = -1;
-                    }
-                    if (value < 0 || value > 25) {
-                        cout << " Value must be between 0 and 25!" << endl;
-                    }
-                } while (value < 0 || value > 25);
-                matrixKey[i][j] = value;
-            }
-        }
+        matrixKey = readMatrixValues(n);
     }
 
     bool Utils::isLowercaseOnly(const string& text)
