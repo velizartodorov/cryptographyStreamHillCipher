@@ -55,8 +55,8 @@ any platform (Windows, Linux, macOS) via CMake.
 
 ### Prerequisites
 
-- A C++17 compiler (g++, clang, or MSVC)
-- **CMake** 3.10+
+- A C++23 compiler (g++, clang, or MSVC)
+- **CMake** 3.20+
 
 ### Building
 
@@ -200,7 +200,7 @@ hillCipher.encode(cipherText, hillMatrix);
 
 ### Code Standards
 
-- **C++17** standard compliance
+- **C++23** standard compliance
 - **Consistent** naming conventions
 - **Comprehensive** test coverage
 - **Clear** documentation and comments
