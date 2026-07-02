@@ -38,16 +38,16 @@ jobs:
         echo "Checking for security anti-patterns..."
         
         echo "Checking for unsafe string functions:"
-        findstr /r /i "strcpy\|strcat\|sprintf\|gets\|scanf" *.cpp *.h || echo "No unsafe string functions found"
-        
+        findstr /s /r /i "strcpy\|strcat\|sprintf\|gets\|scanf" *.cpp *.h || echo "No unsafe string functions found"
+
         echo "Checking for buffer overflow risks:"
-        findstr /r /i "char.*\[.*\]" *.cpp *.h || echo "No fixed-size buffers found"
-        
+        findstr /s /r /i "char.*\[.*\]" *.cpp *.h || echo "No fixed-size buffers found"
+
         echo "Checking for memory management issues:"
-        findstr /r /i "malloc\|free\|new\|delete" *.cpp *.h || echo "No manual memory management found"
-        
+        findstr /s /r /i "malloc\|free\|new\|delete" *.cpp *.h || echo "No manual memory management found"
+
         echo "Checking for potential integer overflow:"
-        findstr /r /i "int.*\*.*int\|int.*\+.*int" *.cpp *.h || echo "No potential integer overflow found"
+        findstr /s /r /i "int.*\*.*int\|int.*\+.*int" *.cpp *.h || echo "No potential integer overflow found"
         
         echo "Security scan completed"
       shell: cmd
@@ -56,6 +56,6 @@ jobs:
     - name: Check for hardcoded secrets
       run: |
         echo "Checking for potential hardcoded secrets..."
-        findstr /r /i "password\|secret\|key.*=.*[a-zA-Z0-9]\{8,\}\|token.*=.*[a-zA-Z0-9]\{8,\}" *.cpp *.h || echo "No potential secrets found"
+        findstr /s /r /i "password\|secret\|key.*=.*[a-zA-Z0-9]\{8,\}\|token.*=.*[a-zA-Z0-9]\{8,\}" *.cpp *.h || echo "No potential secrets found"
       shell: cmd
       continue-on-error: true

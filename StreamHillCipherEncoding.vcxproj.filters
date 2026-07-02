@@ -18,24 +18,24 @@
     <ClCompile Include="StreamHillCipherEncoding.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StreamCipher.cpp">
+    <ClCompile Include="StreamCipher\StreamCipher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HillCipher.cpp">
+    <ClCompile Include="HillCipher\HillCipher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Utils.cpp">
+    <ClCompile Include="Utils\Utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="StreamCipher.h">
+    <ClInclude Include="StreamCipher\StreamCipher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HillCipher.h">
+    <ClInclude Include="HillCipher\HillCipher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Utils.h">
+    <ClInclude Include="Utils\Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

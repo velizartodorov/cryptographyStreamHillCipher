@@ -59,9 +59,12 @@ jobs:
         copy x64\Release\StreamHillCipherEncoding.exe release-package\
         copy x64\Release\TestProject.exe release-package\
         copy README_TESTS.md release-package\
-        copy *.h release-package\
-        copy *.cpp release-package\
-        
+        copy StreamHillCipherEncoding.cpp release-package\
+        xcopy HillCipher release-package\HillCipher\ /y /i
+        xcopy StreamCipher release-package\StreamCipher\ /y /i
+        xcopy Utils release-package\Utils\ /y /i
+        xcopy tests release-package\tests\ /y /i
+
         echo "Release package contents:"
         dir release-package /s
       shell: cmd

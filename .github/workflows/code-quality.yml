@@ -28,13 +28,13 @@ jobs:
         echo "Checking for common C++ code issues..."
         
         echo "Checking for TODO comments:"
-        findstr /r /i "todo\|fixme\|hack" *.cpp *.h || echo "No TODO comments found"
-        
+        findstr /s /r /i "todo\|fixme\|hack" *.cpp *.h || echo "No TODO comments found"
+
         echo "Checking for debug code:"
-        findstr /r /i "printf\|cout.*debug\|cerr.*debug" *.cpp *.h || echo "No debug output found"
-        
+        findstr /s /r /i "printf\|cout.*debug\|cerr.*debug" *.cpp *.h || echo "No debug output found"
+
         echo "Checking for hardcoded paths:"
-        findstr /r /i "c:\\\|d:\\\|e:\\\|f:\\\|g:\\\|h:\\\|i:\\\|j:\\\|k:\\\|l:\\\|m:\\\|n:\\\|o:\\\|p:\\\|q:\\\|r:\\\|s:\\\|t:\\\|u:\\\|v:\\\|w:\\\|x:\\\|y:\\\|z:\\" *.cpp *.h || echo "No hardcoded paths found"
+        findstr /s /r /i "c:\\\|d:\\\|e:\\\|f:\\\|g:\\\|h:\\\|i:\\\|j:\\\|k:\\\|l:\\\|m:\\\|n:\\\|o:\\\|p:\\\|q:\\\|r:\\\|s:\\\|t:\\\|u:\\\|v:\\\|w:\\\|x:\\\|y:\\\|z:\\" *.cpp *.h || echo "No hardcoded paths found"
         
         echo "Code quality check completed"
       shell: cmd
@@ -54,8 +54,8 @@ jobs:
           exit /b 1
         )
         
-        if not exist "TestFramework.h" (
-          echo "ERROR: TestFramework.h not found"
+        if not exist "tests\TestFramework.h" (
+          echo "ERROR: tests\TestFramework.h not found"
           exit /b 1
         )
         
@@ -65,7 +65,7 @@ jobs:
     - name: Check file encoding
       run: |
         echo "Checking file encodings..."
-        for %%f in (*.cpp *.h) do (
+        for /r %%f in (*.cpp *.h) do (
           echo Checking %%f
           file %%f 2>nul || echo "File command not available, skipping encoding check"
         )

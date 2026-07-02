@@ -27,16 +27,23 @@ The combination provides enhanced security through multiple layers of encryption
 ### File Structure
 
 ```
-StreamHillCipherEncoding/
-├── StreamCipher.cpp/.h          # Stream cipher implementation
-├── HillCipher.cpp/.h            # Hill cipher implementation
-├── Utils.cpp/.h                 # Utility functions
+cryptographyStreamHillCipher/
+├── StreamCipher/
+│   ├── StreamCipher.cpp         # Stream cipher implementation
+│   └── StreamCipher.h
+├── HillCipher/
+│   ├── HillCipher.cpp           # Hill cipher implementation
+│   └── HillCipher.h
+├── Utils/
+│   ├── Utils.cpp                # Utility functions
+│   └── Utils.h
+├── tests/
+│   ├── TestFramework.h          # Custom test framework
+│   ├── TestRunner.cpp           # Test execution
+│   └── *Test.cpp                # Unit and integration tests
 ├── StreamHillCipherEncoding.cpp # Main application
-├── TestFramework.h              # Custom test framework
-├── *Test.cpp                    # Unit and integration tests
-├── TestRunner.cpp               # Test execution
 ├── .github/workflows/           # CI/CD workflows
-└── README_TESTS.md             # Detailed testing documentation
+└── README_TESTS.md              # Detailed testing documentation
 ```
 
 ## 🚀 Quick Start
