@@ -3,6 +3,18 @@
 #include <cstring>
 #include <iostream>
 
+// Mirrors the lowercase-only check Utils::inputCheck performs before its
+// longjmp-based retry loop, which is impractical to exercise directly in a test.
+static bool isAllLowercase(const char* text) {
+    int length = strlen(text);
+    for (int i = 0; i < length; i++) {
+        if (!(97 <= text[i] && text[i] <= 122)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 // Test for displayText function with lowercase input
 TEST(Utils_DisplayTextLowercase) {
     char text[] = "hello";
@@ -82,83 +94,28 @@ TEST(Utils_DisplayMatrix) {
 }
 
 // Test for inputCheck function with valid lowercase input
+// This function uses longjmp which makes it difficult to test directly,
+// so we test the lowercase-check logic indirectly via isAllLowercase.
 TEST(Utils_InputCheckValidLowercase) {
-    char text[] = "hello";
-    int length;
-    
-    // This function uses longjmp which makes it difficult to test directly
-    // We'll test the logic indirectly
-    length = strlen(text);
-    bool allValid = true;
-    for (int i = 0; i < length; i++) {
-        if (!(97 <= text[i] && text[i] <= 122)) {
-            allValid = false;
-            break;
-        }
-    }
-    ASSERT_TRUE(allValid);
+    ASSERT_TRUE(isAllLowercase("hello"));
 }
 
 // Test for inputCheck function with invalid input (numbers)
 TEST(Utils_InputCheckInvalidNumbers) {
-    char text[] = "hello123";
-    int length;
-    
-    length = strlen(text);
-    bool allValid = true;
-    for (int i = 0; i < length; i++) {
-        if (!(97 <= text[i] && text[i] <= 122)) {
-            allValid = false;
-            break;
-        }
-    }
-    ASSERT_FALSE(allValid);
+    ASSERT_FALSE(isAllLowercase("hello123"));
 }
 
 // Test for inputCheck function with uppercase input
 TEST(Utils_InputCheckUppercase) {
-    char text[] = "HELLO";
-    int length;
-    
-    length = strlen(text);
-    bool allValid = true;
-    for (int i = 0; i < length; i++) {
-        if (!(97 <= text[i] && text[i] <= 122)) {
-            allValid = false;
-            break;
-        }
-    }
-    ASSERT_FALSE(allValid); // Uppercase should be invalid according to the logic
+    ASSERT_FALSE(isAllLowercase("HELLO")); // Uppercase should be invalid according to the logic
 }
 
 // Test for inputCheck function with special characters
 TEST(Utils_InputCheckSpecialCharacters) {
-    char text[] = "hello!@#";
-    int length;
-    
-    length = strlen(text);
-    bool allValid = true;
-    for (int i = 0; i < length; i++) {
-        if (!(97 <= text[i] && text[i] <= 122)) {
-            allValid = false;
-            break;
-        }
-    }
-    ASSERT_FALSE(allValid);
+    ASSERT_FALSE(isAllLowercase("hello!@#"));
 }
 
 // Test for inputCheck function with empty string
 TEST(Utils_InputCheckEmptyString) {
-    char text[] = "";
-    int length;
-    
-    length = strlen(text);
-    bool allValid = true;
-    for (int i = 0; i < length; i++) {
-        if (!(97 <= text[i] && text[i] <= 122)) {
-            allValid = false;
-            break;
-        }
-    }
-    ASSERT_TRUE(allValid); // Empty string should be valid (no invalid characters)
+    ASSERT_TRUE(isAllLowercase("")); // Empty string should be valid (no invalid characters)
 }
