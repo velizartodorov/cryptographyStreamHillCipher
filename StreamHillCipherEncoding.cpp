@@ -6,8 +6,8 @@
 
 int main()
 {
-	std::string char_key, plain_text, cipher_text;
-	std::vector<std::vector<int>> matrix_key;
+	string char_key, plain_text, cipher_text;
+	vector<vector<int>> matrix_key;
 
 	StreamCipher streamcipher;
 	HillCipher hillcipher;

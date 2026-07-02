@@ -2,8 +2,6 @@
 #include "Utils.h"
 #include <vector>
 
-using namespace std;
-
 void StreamCipher::encode(const string& plain_text, string& cipher_text, const string& char_key)
 {
 	int key_length = static_cast<int>(char_key.length());

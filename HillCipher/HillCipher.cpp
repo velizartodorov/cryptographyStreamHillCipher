@@ -1,8 +1,6 @@
 #include "HillCipher.h"
 #include "Utils.h"
 
-using namespace std;
-
 jmp_buf resume_here;
 
 void HillCipher::encode(string& plain_txt, const vector<vector<int>>& matrix_key)
