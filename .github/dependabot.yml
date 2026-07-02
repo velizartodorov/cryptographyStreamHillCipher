@@ -5,7 +5,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 50
+    rebase-strategy: "auto"
     groups:
       github-actions:
         patterns:
@@ -16,7 +17,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 50
+    rebase-strategy: "auto"
     groups:
       vcpkg:
         patterns:
