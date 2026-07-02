@@ -2,12 +2,12 @@
 #include "StreamCipher.h"
 #include "HillCipher.h"
 #include "Utils.h"
+#include "Matrix.h"
 #include <string>
-#include <vector>
 
 // Runs the full Stream Cipher -> Hill Cipher pipeline, writing the
 // intermediate stream-cipher output into cipherText.
-static void runPipeline(const string& plainText, string& cipherText, const string& key, const vector<vector<int>>& matrixKey) {
+static void runPipeline(const string& plainText, string& cipherText, const string& key, const Matrix& matrixKey) {
     StreamCipher streamCipher;
     HillCipher hillCipher;
     streamCipher.encode(plainText, cipherText, key);
@@ -18,7 +18,7 @@ struct PipelineCase {
     const char* name;
     const char* plainText;
     const char* key;
-    vector<vector<int>> matrixKey;
+    Matrix matrixKey;
 };
 
 static const PipelineCase pipelineCases[] = {
@@ -74,7 +74,7 @@ TEST(Integration_EncryptionConsistency) {
     string cipherText1;
     string cipherText2;
     string key = "testkey";
-    vector<vector<int>> matrixKey = {{3, 1}, {2, 4}};
+    Matrix matrixKey = {{3, 1}, {2, 4}};
 
     // Run the same encryption twice
     runPipeline(plainText, cipherText1, key, matrixKey);

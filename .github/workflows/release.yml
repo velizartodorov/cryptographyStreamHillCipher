@@ -61,6 +61,7 @@ jobs:
         copy README_TESTS.md release-package\
         copy StreamHillCipherEncoding.cpp release-package\
         xcopy HillCipher release-package\HillCipher\ /y /i
+        xcopy Matrix release-package\Matrix\ /y /i
         xcopy StreamCipher release-package\StreamCipher\ /y /i
         xcopy Utils release-package\Utils\ /y /i
         xcopy tests release-package\tests\ /y /i

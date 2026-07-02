@@ -1,5 +1,6 @@
 #include "TestFramework.h"
 #include "Utils.h"
+#include "Matrix.h"
 #include <cstring>
 #include <string>
 #include <vector>
@@ -53,7 +54,7 @@ TEST(Utils_DisplayNumber) {
 
 // Test for displayMatrix function
 TEST(Utils_DisplayMatrix) {
-    vector<vector<int>> matrix = {{1, 2}, {3, 4}};
+    Matrix matrix = {{1, 2}, {3, 4}};
 
     // This function only displays, so we just verify it doesn't crash
     Utils::displayMatrix(matrix);

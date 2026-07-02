@@ -3,7 +3,7 @@
 
 jmp_buf resume_here;
 
-void HillCipher::encode(string& plain_txt, const vector<vector<int>>& matrix_key)
+void HillCipher::encode(string& plain_txt, const Matrix& matrix_key)
 {
 	int n = static_cast<int>(matrix_key.size()); // block size: matrix_key is n x n
 
@@ -51,7 +51,7 @@ void HillCipher::encode(string& plain_txt, const vector<vector<int>>& matrix_key
 
 	// Transforming values of alphabet_num into 2D
 
-	vector<vector<int>> alphabet_matrix(row_count, vector<int>(n));
+	Matrix alphabet_matrix(row_count, n);
 	for (int i = 0; i < row_count; i++)
 	{
 		for (int j = 0; j < n; j++)
@@ -65,7 +65,7 @@ void HillCipher::encode(string& plain_txt, const vector<vector<int>>& matrix_key
 
 	// Multiplying and visualizing key matrix with matrix of text;
 
-	vector<vector<int>> result_matrix(row_count, vector<int>(n, 0));
+	Matrix result_matrix(row_count, n);
 	for (int i = 0; i < row_count; i++)
 	{
 		for (int j = 0; j < n; j++)

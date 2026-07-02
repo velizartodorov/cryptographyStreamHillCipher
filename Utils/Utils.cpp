@@ -2,7 +2,7 @@
 
 jmp_buf Utils::resume_here;
 
-    void Utils::validateInput(string& char_key, string& plain_text, vector<vector<int>>& matrix_key) {
+    void Utils::validateInput(string& char_key, string& plain_text, Matrix& matrix_key) {
         system("color F0");
 
         if (setjmp(resume_here) != 0)
@@ -30,7 +30,7 @@ jmp_buf Utils::resume_here;
        cout << endl << " Enter Hill cipher matrix size (N for an N x N key matrix): ";
        cin >> n;
 
-       matrix_key.assign(n, vector<int>(n));
+       matrix_key = Matrix(n, n);
        cout << endl << " Enter Hill key (matrix [" << n << " x " << n << "]):" << endl;
 
         for (int i = 0; i < n; i++)
@@ -58,7 +58,7 @@ jmp_buf Utils::resume_here;
         }
     }
 
-    void Utils::displayMatrix(const vector<vector<int>>& matrix) {
+    void Utils::displayMatrix(const Matrix& matrix) {
         cout << "\n";
         for (const auto& row : matrix) {
             cout << "\n";

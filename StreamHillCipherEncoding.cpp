@@ -1,13 +1,13 @@
 #include "Utils.h"
 #include "StreamCipher.h"
 #include "HillCipher.h"
+#include "Matrix.h"
 #include <string>
-#include <vector>
 
 int main()
 {
 	string char_key, plain_text, cipher_text;
-	vector<vector<int>> matrix_key;
+	Matrix matrix_key;
 
 	StreamCipher streamcipher;
 	HillCipher hillcipher;

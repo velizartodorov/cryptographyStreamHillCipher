@@ -1,10 +1,10 @@
 #include "TestFramework.h"
 #include "HillCipher.h"
 #include "Utils.h"
+#include "Matrix.h"
 #include <string>
-#include <vector>
 
-static void encodeHill(string& plainText, const vector<vector<int>>& matrixKey) {
+static void encodeHill(string& plainText, const Matrix& matrixKey) {
     HillCipher cipher;
     cipher.encode(plainText, matrixKey);
 }
@@ -12,7 +12,7 @@ static void encodeHill(string& plainText, const vector<vector<int>>& matrixKey) 
 struct HillCase {
     const char* name;
     const char* plainText;
-    vector<vector<int>> matrixKey;
+    Matrix matrixKey;
 };
 
 static const HillCase hillCases[] = {
