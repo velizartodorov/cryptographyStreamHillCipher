@@ -26,7 +26,7 @@ static const StreamCase streamCases[] = {
 };
 
 // Test for stream cipher encoding across text/key variations. In every accepted
-// case, the cipher text should be the same length as the plain text. plain_text
+// case, the cipher text should be the same length as the plain text. plainText
 // is taken by const reference, so mutation is ruled out at compile time.
 // Note: The original implementation uses _getche() which requires user input;
 // encodeStream/StreamCipher::encode here sidestep that for testing.

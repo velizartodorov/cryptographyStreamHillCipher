@@ -30,7 +30,7 @@ static const HillCase hillCases[] = {
 };
 
 // Test for Hill cipher encoding across text lengths, casing, and key matrix
-// sizes (matrix_key's dimensions drive the block size N — see ThreeByThreeMatrix
+// sizes (matrixKey's dimensions drive the block size N — see ThreeByThreeMatrix
 // and OneByOneMatrix). Every case just needs to complete without crashing;
 // non-multiple-of-N inputs get 'x'-padded in place by HillCipher::encode itself.
 TEST(HillCipher_AllCases) {

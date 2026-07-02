@@ -1,35 +1,35 @@
 #include "HillCipher.h"
 #include "Utils.h"
 
-jmp_buf resume_here;
+jmp_buf resumeHere;
 
-void HillCipher::encode(string& plain_txt, const Matrix& matrix_key)
+void HillCipher::encode(string& plainTxt, const Matrix& matrixKey)
 {
-	int n = static_cast<int>(matrix_key.size()); // block size: matrix_key is n x n
+	int n = static_cast<int>(matrixKey.size()); // block size: matrixKey is n x n
 
-	if (setjmp(resume_here) != 0)
+	if (setjmp(resumeHere) != 0)
 	{
 		cout << "" << endl;
 	}
 
 	cout << endl << " --- Hill cipher --- " << endl;
 
-	// Padding plain_text so its length is a multiple of n
+	// Padding plainTxt so its length is a multiple of n
 
-	int str_length = static_cast<int>(plain_txt.length());
-	int remainder = str_length % n;
+	int strLength = static_cast<int>(plainTxt.length());
+	int remainder = strLength % n;
 
 	if (remainder != 0)
 	{
-		int pad_count = n - remainder;
-		cout << endl << " Length of plain text is " << str_length << " symbols, not a multiple of " << n << "!";
+		int padCount = n - remainder;
+		cout << endl << " Length of plain text is " << strLength << " symbols, not a multiple of " << n << "!";
 
-		char pad_char = (97 <= plain_txt[0] && plain_txt[0] <= 122) ? 'x' : 'X';
-		plain_txt.append(pad_count, pad_char);
+		char padChar = (97 <= plainTxt[0] && plainTxt[0] <= 122) ? 'x' : 'X';
+		plainTxt.append(padCount, padChar);
 
 		cout << " Corrected plain text:" << endl;
-		vector<int> padded_alphabet_num;
-		Utils::displayText(plain_txt, padded_alphabet_num);
+		vector<int> paddedAlphabetNum;
+		Utils::displayText(plainTxt, paddedAlphabetNum);
 	}
 	else
 	{
@@ -37,55 +37,55 @@ void HillCipher::encode(string& plain_txt, const Matrix& matrix_key)
 	}
 
 	cout << endl << " Key Matrix: ";
-	Utils::displayMatrix(matrix_key);
+	Utils::displayMatrix(matrixKey);
 
-	vector<int> alphabet_num;
-	Utils::displayText(plain_txt, alphabet_num);
-	Utils::displayNumber(alphabet_num);
+	vector<int> alphabetNum;
+	Utils::displayText(plainTxt, alphabetNum);
+	Utils::displayNumber(alphabetNum);
 
-	// Calculating rows of alphabet_matrix
+	// Calculating rows of alphabetMatrix
 
-	str_length = static_cast<int>(plain_txt.length());
-	int row_count = str_length / n;
-	cout << endl << " Row count of plain text matrix: " << row_count << endl;
+	strLength = static_cast<int>(plainTxt.length());
+	int rowCount = strLength / n;
+	cout << endl << " Row count of plain text matrix: " << rowCount << endl;
 
-	// Transforming values of alphabet_num into 2D
+	// Transforming values of alphabetNum into 2D
 
-	Matrix alphabet_matrix(row_count, n);
-	for (int i = 0; i < row_count; i++)
+	Matrix alphabetMatrix(rowCount, n);
+	for (int i = 0; i < rowCount; i++)
 	{
 		for (int j = 0; j < n; j++)
 		{
-			alphabet_matrix[i][j] = alphabet_num[i * n + j];
+			alphabetMatrix[i][j] = alphabetNum[i * n + j];
 		}
 	}
 
 	cout << endl << " Matrix of plain text:";
-	Utils::displayMatrix(alphabet_matrix);
+	Utils::displayMatrix(alphabetMatrix);
 
 	// Multiplying and visualizing key matrix with matrix of text;
 
-	Matrix result_matrix(row_count, n);
-	for (int i = 0; i < row_count; i++)
+	Matrix resultMatrix(rowCount, n);
+	for (int i = 0; i < rowCount; i++)
 	{
 		for (int j = 0; j < n; j++)
 		{
 			for (int k = 0; k < n; k++)
 			{
-				result_matrix[i][j] += (alphabet_matrix[i][k] * matrix_key[k][j]);
+				resultMatrix[i][j] += (alphabetMatrix[i][k] * matrixKey[k][j]);
 			}
 		}
 	}
 
 	cout << endl << " Calculated matrix: ";
-	Utils::displayMatrix(result_matrix);
+	Utils::displayMatrix(resultMatrix);
 
-	cout << endl << " Encrypted equivalent of '" << plain_txt << "' is: " << endl << endl;
-	for (int i = 0; i < row_count; ++i)
+	cout << endl << " Encrypted equivalent of '" << plainTxt << "' is: " << endl << endl;
+	for (int i = 0; i < rowCount; ++i)
 	{
 		for (int j = 0; j < n; ++j)
 		{
-			cout << " " << (char)((result_matrix[i][j]) % 26 + 65);
+			cout << " " << (char)((resultMatrix[i][j]) % 26 + 65);
 		}
 	}
 	cout << endl << endl;

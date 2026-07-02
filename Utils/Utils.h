@@ -12,12 +12,12 @@ using namespace std;
 class Utils {
 public:
 
-    static void validateInput(string& char_key, string& plain_text, Matrix& matrix_key);
+    static void validateInput(string& charKey, string& plainText, Matrix& matrixKey);
     static void inputCheck(const string& text);
     static void displayMatrix(const Matrix& matrix);
-    static void displayText(const string& display_text, vector<int>& alphabet_num);
-    static void displayNumber(const vector<int>& num_array);
+    static void displayText(const string& text, vector<int>& alphabetNum);
+    static void displayNumber(const vector<int>& numArray);
 
 private:
-    static jmp_buf resume_here;
+    static jmp_buf resumeHere;
 };

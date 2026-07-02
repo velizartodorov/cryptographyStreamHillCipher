@@ -6,14 +6,14 @@
 
 int main()
 {
-	string char_key, plain_text, cipher_text;
-	Matrix matrix_key;
+	string charKey, plainText, cipherText;
+	Matrix matrixKey;
 
-	StreamCipher streamcipher;
-	HillCipher hillcipher;
-	Utils::validateInput(char_key, plain_text, matrix_key);
-	streamcipher.encode(plain_text, cipher_text, char_key);
-	hillcipher.encode(cipher_text, matrix_key);
+	StreamCipher streamCipher;
+	HillCipher hillCipher;
+	Utils::validateInput(charKey, plainText, matrixKey);
+	streamCipher.encode(plainText, cipherText, charKey);
+	hillCipher.encode(cipherText, matrixKey);
 
 	system("pause"); // .monitor pause
 }

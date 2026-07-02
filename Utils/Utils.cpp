@@ -1,36 +1,36 @@
 #include "Utils.h"
 
-jmp_buf Utils::resume_here;
+jmp_buf Utils::resumeHere;
 
-    void Utils::validateInput(string& char_key, string& plain_text, Matrix& matrix_key) {
+    void Utils::validateInput(string& charKey, string& plainText, Matrix& matrixKey) {
         system("color F0");
 
-        if (setjmp(resume_here) != 0)
+        if (setjmp(resumeHere) != 0)
         {
             cout << "";
         }
         cout << endl << " --- Stream and Hill ciphers --- " << endl;
 
         cout << endl << " Enter plain text: ";
-        cin >> plain_text;
+        cin >> plainText;
 
-        inputCheck(plain_text);
+        inputCheck(plainText);
 
-        if (setjmp(resume_here) != 0)
+        if (setjmp(resumeHere) != 0)
         {
             cout << "";
         }
 
         cout << endl << " Enter stream key: ";
-        cin >> char_key;
+        cin >> charKey;
 
-       inputCheck(char_key);
+       inputCheck(charKey);
 
        int n;
        cout << endl << " Enter Hill cipher matrix size (N for an N x N key matrix): ";
        cin >> n;
 
-       matrix_key = Matrix(n, n);
+       matrixKey = Matrix(n, n);
        cout << endl << " Enter Hill key (matrix [" << n << " x " << n << "]):" << endl;
 
         for (int i = 0; i < n; i++)
@@ -38,22 +38,22 @@ jmp_buf Utils::resume_here;
             for (int j = 0; j < n; j++)
             {
                 cout << endl << " Value [" << i + 1 << "," << j + 1 << "]: ";
-                cin >> matrix_key[i][j];
+                cin >> matrixKey[i][j];
             }
         }
     }
 
     void Utils::inputCheck(const string& text)
     {
-        int str_length = static_cast<int>(text.length());
+        int strLength = static_cast<int>(text.length());
 
-        for (int i = 0; i < str_length; i++)
+        for (int i = 0; i < strLength; i++)
         {
             if (!(97 <= text[i] && text[i] <= 122))
             {
                 system("CLS");
                 cout << endl << " Enter text: (a-z)!" << endl;
-                longjmp(resume_here, 1);
+                longjmp(resumeHere, 1);
             }
         }
     }
@@ -67,28 +67,28 @@ jmp_buf Utils::resume_here;
         }
     }
 
-    void Utils::displayText(const string& display_text, vector<int>& alphabet_num) {
-        int n = static_cast<int>(display_text.length());
-        alphabet_num.assign(n, 0);
+    void Utils::displayText(const string& text, vector<int>& alphabetNum) {
+        int n = static_cast<int>(text.length());
+        alphabetNum.assign(n, 0);
         cout << "\n";
         for (int i = 0; i < n; ++i) {
-            unsigned char c = static_cast<unsigned char>(display_text[i]);
+            unsigned char c = static_cast<unsigned char>(text[i]);
             if (97 <= c && c <= 122) {
-                alphabet_num[i] = c - 97;
+                alphabetNum[i] = c - 97;
                 cout << " " << static_cast<char>(toupper(c));
             }
             else if (65 <= c && c <= 90) {
-                alphabet_num[i] = c - 65;
-                cout << " " << display_text[i];
+                alphabetNum[i] = c - 65;
+                cout << " " << text[i];
             }
         }
         cout << "\n";
     }
 
-    void Utils::displayNumber(const vector<int>& num_array)
+    void Utils::displayNumber(const vector<int>& numArray)
     {
         cout << endl;
-        for (int value : num_array)
+        for (int value : numArray)
             cout << " " << value;
         cout << endl;
     }
